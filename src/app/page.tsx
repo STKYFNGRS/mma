@@ -112,9 +112,51 @@ export default function Home() {
     
     return () => clearInterval(interval);
   }, []);
+  
+  // Schema.org structured data for organization/website
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    'name': 'mma.box',
+    'url': 'https://www.mma.box',
+    'logo': 'https://www.mma.box/android-chrome-512x512.png',
+    'description': 'The ultimate MMA hub for fans and fighters, featuring live events, fighter stats, news, and community.',
+    'sameAs': [
+      'https://twitter.com/mmabox',
+      'https://instagram.com/mmabox',
+      'https://youtube.com/mmabox'
+    ]
+  };
+  
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    'url': 'https://www.mma.box',
+    'name': 'mma.box - Your Ultimate MMA Destination',
+    'description': 'Follow live MMA events, fighter stats, breaking news, and exclusive content in one place.',
+    'potentialAction': {
+      '@type': 'SearchAction',
+      'target': 'https://www.mma.box/search?q={search_term_string}',
+      'query-input': 'required name=search_term_string'
+    }
+  };
 
   return (
     <div className="space-y-16 pb-16 bg-black">
+      {/* Add structured data scripts */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationSchema)
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteSchema)
+        }}
+      />
+      
       {/* Hero Section with Video Background */}
       <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden border-b border-gray-800/30">
         {/* Ring Background Image */}

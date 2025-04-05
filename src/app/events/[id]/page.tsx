@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import BreadcrumbNav from '@/components/BreadcrumbNav';
 
 // Mock data for event details
 const eventData = {
@@ -53,6 +54,8 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     };
   }
   
+  const url = `https://www.mma.box/events/${eventId}`;
+  
   return {
     title: `${event.title}: ${event.mainEvent} | MMA Fight Card`,
     description: `Watch ${event.mainEvent} and the complete ${event.title} fight card on ${event.date} at ${event.venue}, ${event.location}. Get tickets, stream info, and fight details.`,
@@ -60,7 +63,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     openGraph: {
       title: `${event.title}: ${event.mainEvent}`,
       description: event.description,
-      url: `https://www.mma.box/events/${eventId}`,
+      url,
       type: 'website',
       images: [
         {
@@ -71,6 +74,9 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
         },
       ],
     },
+    alternates: {
+      canonical: url,
+    }
   };
 }
 
@@ -85,6 +91,13 @@ export default function EventPage({ params }: { params: { id: string } }) {
   const event = eventData[eventId as keyof typeof eventData];
   const eventDateObject = new Date(`${event.date} ${event.startTime}`);
   const isoDate = eventDateObject.toISOString();
+  
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { label: 'Home', path: '/' },
+    { label: 'Events', path: '/events' },
+    { label: event.title, path: `/events/${eventId}`, isCurrentPage: true }
+  ];
   
   // Schema.org structured data for the event
   const structuredData = {
@@ -127,7 +140,10 @@ export default function EventPage({ params }: { params: { id: string } }) {
         }}
       />
       
-      <div className="container mx-auto px-6 py-16">
+      <div className="container mx-auto px-6 py-10">
+        {/* Breadcrumb navigation */}
+        <BreadcrumbNav items={breadcrumbItems} />
+        
         <h1 className="text-4xl font-bold mb-2">{event.title}</h1>
         <div className="flex items-center gap-4 text-gray-400 mb-6">
           <span>{event.date}</span>
