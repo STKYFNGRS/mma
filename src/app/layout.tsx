@@ -9,8 +9,8 @@ import Footer from '@/components/layout/Footer';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: "mma.box - MMA Fan Hub",
-  description: "The ultimate destination for MMA fans.",
+  title: "MMA.Box - The Ultimate MMA Destination",
+  description: "The ultimate destination for MMA fans, fighters and leagues.",
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
