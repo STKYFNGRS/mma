@@ -1,56 +1,78 @@
-'use client'; // This component uses client-side hooks and context
+'use client'; 
 
-import { config, projectId, wagmiAdapter } from '@/config'; // Import adapter again
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createAppKit } from '@reown/appkit/react'; // Import createAppKit
-import { mainnet, arbitrum } from '@reown/appkit/networks'; // Import Reown networks
-// import '@rainbow-me/rainbowkit/styles.css'; // Remove RainbowKit styles
-import React, { type ReactNode } from 'react';
-import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'; // Add Config back
+import React, { type ReactNode, useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { config, projectId, wagmiAdapter } from '@/config';
+import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi';
 
 // Set up queryClient
 const queryClient = new QueryClient();
 
-// Define metadata
-const metadata = {
-  name: 'mma.box',
-  description: 'The ultimate MMA fan website',
-  url: 'https://mma.box',
-  icons: ['https://mma.box/favicon.ico']
-};
+// Context Provider component with conditional wallet initialization
+function ContextProvider({ children, cookies }: { children: ReactNode; cookies?: string | null }) {
+  const pathname = usePathname();
+  const [walletInitialized, setWalletInitialized] = useState<boolean>(false);
 
-// Define networks for AppKit
-const appKitNetworks = [mainnet, arbitrum];
+  // Only initialize wallet features on community page or when explicitly needed
+  const shouldInitializeWallet = pathname?.includes('/community') || false;
 
-// Check projectId before calling createAppKit
-if (!projectId) {
-  throw new Error('Reown Project ID (NEXT_PUBLIC_PROJECT_ID) is missing');
-}
+  // Initialize Reown AppKit when needed
+  useEffect(() => {
+    if (shouldInitializeWallet && !walletInitialized) {
+      // Dynamically import and initialize wallet features
+      import('@reown/appkit/react').then(({ createAppKit }) => {
+        import('@reown/appkit/networks').then(({ mainnet, arbitrum }) => {
+          const appKitNetworks = [mainnet, arbitrum];
+          
+          if (!projectId) {
+            console.warn('Reown Project ID (NEXT_PUBLIC_PROJECT_ID) is missing');
+            return;
+          }
 
-// Initialize Reown AppKit during setup
-createAppKit({
-  adapters: [wagmiAdapter], // Pass the adapter
-  projectId: projectId,
-  // @ts-expect-error - Suppress persistent type error
-  networks: appKitNetworks,
-  defaultNetwork: mainnet,
-  metadata: metadata,
-  features: { analytics: true }
-});
+          try {
+            createAppKit({
+              adapters: [wagmiAdapter],
+              projectId: projectId,
+              // @ts-expect-error - Suppress persistent type error
+              networks: appKitNetworks,
+              defaultNetwork: mainnet,
+              metadata: {
+                name: 'mma.box',
+                description: 'The ultimate MMA fan website',
+                url: 'https://mma.box',
+                icons: ['/favicon-32x32.png']
+              },
+              features: { analytics: true }
+            });
+            setWalletInitialized(true);
+          } catch (error) {
+            console.warn('Failed to initialize wallet connection:', error);
+          }
+        });
+      });
+    }
+  }, [pathname, shouldInitializeWallet, walletInitialized]);
 
-// Context Provider component
-function ContextProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
-  // Get initial state from cookies for SSR hydration
-  const initialState = cookieToInitialState(config as Config, cookies);
-
+  // If we need wallet features, use the full provider setup, otherwise just use QueryClient
+  if (shouldInitializeWallet) {
+    const initialState = cookies ? cookieToInitialState(config as Config, cookies) : undefined;
+    
+    return (
+      <WagmiProvider config={config as Config} initialState={initialState}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </WagmiProvider>
+    );
+  }
+  
+  // Default simple provider for non-wallet pages
   return (
-    <WagmiProvider config={config as Config} initialState={initialState}>
-      <QueryClientProvider client={queryClient}>
-        {/* Remove RainbowKitProvider */}
-        {children}
-      </QueryClientProvider>
-    </WagmiProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
   );
 }
 
-export default ContextProvider; 
+export default ContextProvider;
