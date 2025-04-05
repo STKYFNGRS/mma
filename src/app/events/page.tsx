@@ -1,5 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "MMA Events Calendar | Upcoming UFC, Bellator Fights",
+  description: "Complete schedule of upcoming MMA events, including UFC, Bellator and more. Get fight cards, times, and viewing information.",
+  keywords: ["MMA events", "UFC events", "Bellator events", "MMA schedule", "fight cards"],
+  openGraph: {
+    title: "MMA Events Calendar | Upcoming Fights",
+    description: "Browse upcoming MMA events from around the world. Find fight cards, times, and viewing information.",
+    url: "https://www.mma.box/events",
+    type: "website"
+  }
+};
 
 export default function EventsPage() {
   return (

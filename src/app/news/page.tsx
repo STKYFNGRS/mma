@@ -1,5 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "MMA News | Latest UFC, Bellator & Fighting Updates",
+  description: "Get the latest MMA news, fight announcements, results, and analysis from UFC, Bellator, and other major MMA promotions worldwide.",
+  keywords: ["MMA news", "UFC news", "Bellator news", "fight results", "MMA analysis", "fighter interviews"],
+  openGraph: {
+    title: "MMA News | Latest Fighting Updates",
+    description: "Stay up to date with the latest news and updates from the world of MMA.",
+    url: "https://www.mma.box/news",
+    type: "website"
+  }
+};
 
 export default function NewsPage() {
   return (

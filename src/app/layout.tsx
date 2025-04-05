@@ -9,8 +9,46 @@ import Footer from '@/components/layout/Footer';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: "MMA.Box - The Ultimate MMA Destination",
-  description: "The ultimate destination for MMA fans, fighters and leagues.",
+  title: {
+    default: "mma.box - The Ultimate MMA Hub for Fans and Fighters",
+    template: "%s | mma.box"
+  },
+  description: "Follow live MMA events, fighter stats, breaking news, and exclusive content from UFC, Bellator, and more in one place.",
+  keywords: ["MMA", "UFC", "Bellator", "fighters", "mixed martial arts", "boxing", "combat sports"],
+  openGraph: {
+    title: "mma.box - The Ultimate MMA Hub",
+    description: "Follow live MMA events, fighter stats, breaking news, and exclusive content in one place.",
+    url: "https://www.mma.box",
+    siteName: "mma.box",
+    images: [
+      {
+        url: "/android-chrome-512x512.png",
+        width: 512,
+        height: 512,
+        alt: "mma.box logo"
+      }
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "mma.box - The Ultimate MMA Hub",
+    description: "Your go-to destination for MMA content",
+    creator: "@mmabox",
+    images: ["/android-chrome-512x512.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -32,6 +70,9 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/site.webmanifest',
+  alternates: {
+    canonical: 'https://www.mma.box',
+  }
 };
 
 export default async function RootLayout({
