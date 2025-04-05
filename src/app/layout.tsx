@@ -11,6 +11,10 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 export const metadata: Metadata = {
   title: "mma.box - MMA Fan Hub",
   description: "The ultimate destination for MMA fans.",
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default async function RootLayout({
@@ -24,6 +28,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="h-full bg-gray-100 dark:bg-gray-950">
+      <head>
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body className={`${inter.variable} antialiased flex flex-col min-h-screen`}>
         <ContextProvider cookies={cookies}>
           <Header />
