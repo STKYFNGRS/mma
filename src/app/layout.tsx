@@ -12,9 +12,26 @@ export const metadata: Metadata = {
   title: "mma.box - MMA Fan Hub",
   description: "The ultimate destination for MMA fans.",
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+    other: [
+      {
+        rel: 'android-chrome',
+        url: '/android-chrome-192x192.png',
+        sizes: '192x192',
+      },
+      {
+        rel: 'android-chrome',
+        url: '/android-chrome-512x512.png',
+        sizes: '512x512',
+      },
+    ],
   },
+  manifest: '/site.webmanifest',
 };
 
 export default async function RootLayout({
@@ -27,14 +44,11 @@ export default async function RootLayout({
   const cookies = headersObj.get('cookie');
 
   return (
-    <html lang="en" className="h-full bg-gray-100 dark:bg-gray-950">
-      <head>
-        <link rel="manifest" href="/site.webmanifest" />
-      </head>
-      <body className={`${inter.variable} antialiased flex flex-col min-h-screen`}>
+    <html lang="en" className="h-full bg-black">
+      <body className={`${inter.variable} antialiased flex flex-col min-h-screen bg-black text-white`}>
         <ContextProvider cookies={cookies}>
           <Header />
-          <main className="flex-grow container mx-auto px-6 py-8">
+          <main className="flex-grow">
             {children}
           </main>
           <Footer />

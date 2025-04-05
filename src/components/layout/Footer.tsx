@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -21,17 +22,25 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gradient-to-b from-black to-gray-900 text-gray-300 mt-auto border-t border-red-900/30">
+    <footer className="bg-black text-gray-300 mt-auto border-t border-red-900/20">
+      {/* Subtle connector line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-red-900/20 to-transparent"></div>
+      
       <div className="container mx-auto px-4 py-12">
         {/* Main Footer Content - 3 columns on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
           {/* Column 1 - About */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center">
-              <span className="text-xl font-extrabold">
-                <span className="text-red-600">mma</span>
-                <span className="text-white">.box</span>
-              </span>
+            <Link href="/" className="inline-block">
+              <div className="h-10 w-auto relative">
+                <Image 
+                  src="/android-chrome-192x192.png" 
+                  alt="mma.box logo"
+                  width={40}
+                  height={40}
+                  className="opacity-90 hover:opacity-100 transition-opacity"
+                />
+              </div>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">
               The ultimate MMA hub for fans and fighters. Follow live events, 
@@ -71,7 +80,7 @@ export default function Footer() {
                       href={`/${item.toLowerCase()}`} 
                       className="text-gray-400 hover:text-red-500 transition-colors text-sm flex items-center"
                     >
-                      <span className="mr-1 text-xs">&#9656;</span> {item}
+                      <span className="mr-1 text-xs text-red-600/70">&#9656;</span> {item}
                     </Link>
                   </li>
                 ))}
@@ -87,7 +96,7 @@ export default function Footer() {
                       href={`/${item.toLowerCase()}`} 
                       className="text-gray-400 hover:text-red-500 transition-colors text-sm flex items-center"
                     >
-                      <span className="mr-1 text-xs">&#9656;</span> {item}
+                      <span className="mr-1 text-xs text-red-600/70">&#9656;</span> {item}
                     </Link>
                   </li>
                 ))}
@@ -109,17 +118,17 @@ export default function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email address"
-                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 text-gray-200"
+                  className="w-full px-4 py-2 bg-gray-800/80 border border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-600 text-gray-200"
                   required
                 />
               </div>
               <button 
                 type="submit"
                 disabled={subscribed}
-                className={`w-full px-4 py-2 rounded font-medium text-sm transition-colors ${
+                className={`w-full px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-lg ${
                   subscribed 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-red-600 hover:bg-red-700 text-white'
+                    ? 'bg-green-600 text-white shadow-green-900/20' 
+                    : 'bg-red-600 hover:bg-red-700 text-white shadow-red-900/20 hover:shadow-red-900/40'
                 }`}
               >
                 {subscribed ? 'Subscribed!' : 'Subscribe'}
@@ -129,7 +138,7 @@ export default function Footer() {
         </div>
         
         {/* Bottom Bar - Copyright and Legal */}
-        <div className="pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+        <div className="pt-6 border-t border-gray-800/50 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
           <p>
             &copy; {currentYear}{' '}
             <a 

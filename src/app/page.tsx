@@ -114,12 +114,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="space-y-16 pb-16">
+    <div className="space-y-16 pb-16 bg-black">
       {/* Hero Section with Video Background */}
-      <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-        {/* Video or Image Background */}
+      <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden border-b border-gray-800/30">
+        {/* Ring Background Image */}
         <div className="absolute inset-0 bg-black">
-          {/* In a real implementation, add a video here */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center z-0" 
+            style={{ backgroundImage: 'url("/ring.png")' }}
+          ></div>
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-10"></div>
         </div>
         
@@ -168,9 +171,10 @@ export default function Home() {
       </section>
       
       {/* Content Tabs Section */}
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto px-6 py-8 relative">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-900/20 to-transparent"></div>
         <div className="flex justify-center mb-8">
-          <div className="inline-flex rounded-lg border border-gray-800 p-1 bg-gray-900">
+          <div className="inline-flex rounded-lg border border-gray-800 p-1 bg-black/80 backdrop-blur-sm shadow-lg shadow-black/20">
             {['events', 'news', 'fighters'].map((tab) => (
               <button
                 key={tab}
@@ -194,9 +198,9 @@ export default function Home() {
             <h2 className="text-3xl font-bold mb-6 text-gray-100">Upcoming Events</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingEvents.map((event) => (
-                <div key={event.id} className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/20 transition-all hover:-translate-y-1 border border-gray-700">
+                <div key={event.id} className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/20 transition-all hover:-translate-y-1 border border-gray-800/50">
                   {/* Image placeholder - replace with actual event poster */}
-                  <div className="h-48 bg-gray-700 relative">
+                  <div className="h-48 bg-gray-800 relative">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-gray-500">[Event Poster]</span>
                     </div>
@@ -205,7 +209,7 @@ export default function Home() {
                   <div className="p-5">
                     <div className="flex justify-between items-center mb-3">
                       <span className="text-red-500 font-medium text-sm">{event.date}</span>
-                      <span className="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300">{event.location}</span>
+                      <span className="bg-black text-xs px-2 py-1 rounded text-gray-300 border border-gray-800/50">{event.location}</span>
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-white">{event.title}</h3>
                     <p className="text-gray-400 mb-4">Main: {event.mainEvent}</p>
@@ -237,9 +241,9 @@ export default function Home() {
             <h2 className="text-3xl font-bold mb-6 text-gray-100">Latest News & Updates</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {newsItems.map((item) => (
-                <div key={item.id} className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/10 transition-all border border-gray-700">
+                <div key={item.id} className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/10 transition-all border border-gray-800/50">
                   {/* News Image */}
-                  <div className="h-48 bg-gray-700 relative">
+                  <div className="h-48 bg-gray-800 relative">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-gray-500">[News Image]</span>
                     </div>
@@ -284,10 +288,10 @@ export default function Home() {
               {featuredFighters.map((fighter) => (
                 <div 
                   key={fighter.id} 
-                  className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/10 transition-all border border-gray-700 p-6 text-center"
+                  className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/10 transition-all border border-gray-800/50 p-6 text-center"
                 >
                   {/* Fighter Image - Circle */}
-                  <div className="w-32 h-32 mx-auto bg-gray-700 rounded-full mb-4 relative">
+                  <div className="w-32 h-32 mx-auto bg-gray-800 rounded-full mb-4 relative border-2 border-red-900/20">
                     <div className="absolute inset-0 flex items-center justify-center rounded-full">
                       <span className="text-gray-500">[Fighter]</span>
                     </div>
@@ -295,7 +299,7 @@ export default function Home() {
                   
                   <h3 className="text-xl font-bold mb-1 text-white">{fighter.name}</h3>
                   <p className="text-red-500 font-medium mb-2">{fighter.division}</p>
-                  <div className="inline-block px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300 mb-4">
+                  <div className="inline-block px-3 py-1 bg-black border border-gray-800/50 rounded-full text-sm text-gray-300 mb-4">
                     {fighter.record}
                   </div>
                   
@@ -324,10 +328,9 @@ export default function Home() {
       </section>
       
       {/* Call to Action Section */}
-      <section className="container mx-auto px-4">
-        <div className="bg-gradient-to-r from-gray-900 to-black rounded-2xl overflow-hidden relative">
-          <div className="absolute inset-0 bg-[url('/vercel.svg')] opacity-5 bg-center"></div>
-          
+      <section className="container mx-auto px-6 py-8 relative">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-900/20 to-transparent"></div>
+        <div className="bg-black rounded-2xl overflow-hidden relative border border-white/30 shadow-xl shadow-black/20">
           <div className="relative z-10 py-16 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between">
             <div className="mb-8 md:mb-0 md:mr-8">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Join the conversation</h2>
@@ -339,7 +342,7 @@ export default function Home() {
             <div>
               <Link 
                 href="/community" 
-                className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all transform hover:scale-105"
+                className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all transform hover:scale-105 shadow-lg shadow-red-600/20"
               >
                 Join Community
               </Link>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 export default function Header() {
@@ -31,17 +32,24 @@ export default function Header() {
 
   return (
     <header className={`text-white sticky top-0 z-50 transition-all duration-300 ${
-      scrolled ? 'bg-black shadow-lg backdrop-blur-sm' : 'bg-gradient-to-r from-black to-gray-900'
+      scrolled 
+        ? 'bg-black shadow-lg backdrop-blur-sm border-b border-gray-800/30' 
+        : 'bg-black'
     }`}>
       <div className="container mx-auto px-4 sm:px-6">
         <nav className="py-4 flex justify-between items-center">
-          {/* Logo with subtle animation */}
+          {/* Logo */}
           <Link href="/" className="group flex items-center">
-            <span className="text-2xl font-extrabold">
-              <span className="text-red-600 group-hover:text-white transition-colors duration-300">mma</span>
-              <span className="text-white group-hover:text-red-600 transition-colors duration-300">.box</span>
-            </span>
-            <div className="ml-1 h-2 w-2 bg-red-600 rounded-full animate-pulse hidden sm:block"></div>
+            <div className="h-10 w-auto relative">
+              <Image 
+                src="/android-chrome-192x192.png" 
+                alt="mma.box logo"
+                width={40}
+                height={40}
+                priority
+                className="transition-opacity group-hover:opacity-90"
+              />
+            </div>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -56,7 +64,7 @@ export default function Header() {
                 >
                   {item}
                   {isActive(`/${item.toLowerCase()}`) && (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 transform origin-bottom"></span>
+                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-red-600 transform origin-bottom"></span>
                   )}
                 </Link>
               </li>
