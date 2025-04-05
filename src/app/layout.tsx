@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   },
   description: "Your premier destination for comprehensive MMA coverage including UFC, Bellator, ONE Championship events, fighter profiles, breaking news, rankings, and exclusive fight analysis.",
   keywords: ["MMA", "UFC", "Bellator", "ONE Championship", "mixed martial arts", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu", "wrestling", "combat sports"],
+  metadataBase: new URL('https://mma.box'),
   openGraph: {
     title: "mma.box - Ultimate Mixed Martial Arts Destination",
     description: "Complete MMA coverage with live events, fighter profiles, exclusive interviews, fight analysis, and the latest breaking news from UFC, Bellator, and global promotions.",

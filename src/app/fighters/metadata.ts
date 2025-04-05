@@ -4,6 +4,7 @@ const metadata: Metadata = {
   title: "MMA Fighter Profiles | Stats, Records & Rankings",
   description: "Comprehensive profiles of top MMA fighters with detailed stats, fight records, rankings, and career highlights from UFC, Bellator, and more.",
   keywords: ["MMA fighters", "UFC fighters", "Bellator fighters", "fighter profiles", "MMA stats", "fighter rankings"],
+  metadataBase: new URL('https://mma.box'),
   openGraph: {
     title: "MMA Fighter Profiles | Stats & Records",
     description: "Explore profiles of the top MMA fighters from around the world. View their stats, fight records, and upcoming matches.",
@@ -12,4 +13,4 @@ const metadata: Metadata = {
   }
 };
 
-export default metadata; 
+export default metadata;
