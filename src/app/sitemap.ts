@@ -1,133 +1,198 @@
 import { MetadataRoute } from 'next'
 
+// Define valid changeFrequency type
+type ChangeFrequency = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+  // Get current date for lastModified
+  const currentDate = new Date();
+  
+  // Main pages
+  const mainPages = [
     {
       url: 'https://www.mma.box',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
       priority: 1,
     },
     {
       url: 'https://www.mma.box/events',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
       priority: 0.9,
     },
     {
       url: 'https://www.mma.box/fighters',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
       priority: 0.9,
     },
     {
       url: 'https://www.mma.box/news',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
       priority: 0.9,
     },
+  ];
+  
+  // Content pages with high relevance for MMA terms
+  const contentPages = [
     {
-      url: 'https://www.mma.box/shop',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
+      url: 'https://www.mma.box/rankings',
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as ChangeFrequency,
+      priority: 0.85,
+    },
+    {
+      url: 'https://www.mma.box/promotions/ufc',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
+      priority: 0.85,
+    },
+    {
+      url: 'https://www.mma.box/promotions/bellator',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
+      priority: 0.85,
+    },
+    {
+      url: 'https://www.mma.box/promotions/one-championship',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
+      priority: 0.85,
+    },
+    {
+      url: 'https://www.mma.box/videos',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
+      priority: 0.85,
+    },
+    {
+      url: 'https://www.mma.box/weight-classes',
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
+      priority: 0.8,
+    },
+    {
+      url: 'https://www.mma.box/mma-rules',
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
+      priority: 0.8,
+    },
+    {
+      url: 'https://www.mma.box/mma-history',
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
       priority: 0.8,
     },
     {
       url: 'https://www.mma.box/community',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
       priority: 0.8,
     },
     {
-      url: 'https://www.mma.box/rankings',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
+      url: 'https://www.mma.box/shop',
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as ChangeFrequency,
       priority: 0.8,
     },
-    {
-      url: 'https://www.mma.box/videos',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
+  ];
+  
+  // Secondary pages
+  const secondaryPages = [
     {
       url: 'https://www.mma.box/about',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
       priority: 0.7,
     },
     {
       url: 'https://www.mma.box/contact',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
       priority: 0.7,
     },
     {
       url: 'https://www.mma.box/faq',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
       priority: 0.7,
     },
     {
       url: 'https://www.mma.box/careers',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
       priority: 0.6,
     },
     {
       url: 'https://www.mma.box/privacy',
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
+      lastModified: currentDate,
+      changeFrequency: 'yearly' as ChangeFrequency,
       priority: 0.5,
     },
     {
       url: 'https://www.mma.box/terms',
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
+      lastModified: currentDate,
+      changeFrequency: 'yearly' as ChangeFrequency,
       priority: 0.5,
     },
     {
       url: 'https://www.mma.box/cookies',
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
+      lastModified: currentDate,
+      changeFrequency: 'yearly' as ChangeFrequency,
       priority: 0.5,
     },
-    // Dynamic pages examples - in production these would be generated from actual data
-    {
-      url: 'https://www.mma.box/events/1',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+  ];
+  
+  // Dynamic pages (would be generated from DB in production)
+  const dynamicPages = [
+    // Events
+    ...Array.from({ length: 10 }, (_, i) => ({
+      url: `https://www.mma.box/events/${i + 1}`,
+      lastModified: currentDate,
+      changeFrequency: 'daily' as ChangeFrequency,
       priority: 0.8,
-    },
-    {
-      url: 'https://www.mma.box/events/2',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+    })),
+    
+    // Fighters
+    ...Array.from({ length: 20 }, (_, i) => ({
+      url: `https://www.mma.box/fighters/${i + 1}`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as ChangeFrequency,
       priority: 0.8,
-    },
-    {
-      url: 'https://www.mma.box/events/3',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: 'https://www.mma.box/fighters/1',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://www.mma.box/fighters/2',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://www.mma.box/fighters/3',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    }
-  ]
+    })),
+    
+    // News articles
+    ...Array.from({ length: 20 }, (_, i) => ({
+      url: `https://www.mma.box/news/${i + 1}`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
+      priority: 0.7,
+    })),
+    
+    // Weight classes
+    ...['heavyweight', 'light-heavyweight', 'middleweight', 'welterweight', 'lightweight', 'featherweight', 'bantamweight', 'flyweight'].map(weight => ({
+      url: `https://www.mma.box/weight-classes/${weight}`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as ChangeFrequency,
+      priority: 0.75,
+    })),
+    
+    // Fighting techniques
+    ...['striking', 'wrestling', 'brazilian-jiu-jitsu', 'muay-thai', 'boxing', 'judo', 'sambo'].map(technique => ({
+      url: `https://www.mma.box/techniques/${technique}`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as ChangeFrequency,
+      priority: 0.7,
+    })),
+  ];
+  
+  // Combine all URL sets
+  return [
+    ...mainPages,
+    ...contentPages,
+    ...secondaryPages,
+    ...dynamicPages,
+  ];
 } 

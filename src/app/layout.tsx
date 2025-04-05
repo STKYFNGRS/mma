@@ -10,14 +10,14 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: {
-    default: "mma.box - The Ultimate MMA Hub for Fans and Fighters",
+    default: "mma.box - Ultimate MMA Hub | UFC, Bellator, ONE Championship Coverage",
     template: "%s | mma.box"
   },
-  description: "Follow live MMA events, fighter stats, breaking news, and exclusive content from UFC, Bellator, and more in one place.",
-  keywords: ["MMA", "UFC", "Bellator", "fighters", "mixed martial arts", "boxing", "combat sports"],
+  description: "Your premier destination for comprehensive MMA coverage including UFC, Bellator, ONE Championship events, fighter profiles, breaking news, rankings, and exclusive fight analysis.",
+  keywords: ["MMA", "UFC", "Bellator", "ONE Championship", "mixed martial arts", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu", "wrestling", "combat sports"],
   openGraph: {
-    title: "mma.box - The Ultimate MMA Hub",
-    description: "Follow live MMA events, fighter stats, breaking news, and exclusive content in one place.",
+    title: "mma.box - Ultimate Mixed Martial Arts Destination",
+    description: "Complete MMA coverage with live events, fighter profiles, exclusive interviews, fight analysis, and the latest breaking news from UFC, Bellator, and global promotions.",
     url: "https://www.mma.box",
     siteName: "mma.box",
     images: [
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "mma.box - The Ultimate MMA Hub",
-    description: "Your go-to destination for MMA content",
+    title: "mma.box - Ultimate MMA Coverage | UFC, Bellator & More",
+    description: "Follow the latest MMA events, fighters, and breaking news from the world's top promotions",
     creator: "@mmabox",
     images: ["/android-chrome-512x512.png"],
   },

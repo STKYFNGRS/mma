@@ -124,8 +124,20 @@ export default function Home() {
     'sameAs': [
       'https://twitter.com/mmabox',
       'https://instagram.com/mmabox',
-      'https://youtube.com/mmabox'
-    ]
+      'https://youtube.com/mmabox',
+      'https://facebook.com/mmabox',
+      'https://linkedin.com/company/mmabox'
+    ],
+    'foundingDate': '2023-01-01',
+    'founder': {
+      '@type': 'Person',
+      'name': 'MMA Box Team'
+    },
+    'address': {
+      '@type': 'PostalAddress',
+      'addressCountry': 'US'
+    },
+    'keywords': 'MMA, UFC, Bellator, ONE Championship, mixed martial arts, fighting, combat sports'
   };
   
   const websiteSchema = {
@@ -138,7 +150,64 @@ export default function Home() {
       '@type': 'SearchAction',
       'target': 'https://www.mma.box/search?q={search_term_string}',
       'query-input': 'required name=search_term_string'
+    },
+    'inLanguage': 'en-US',
+    'copyrightYear': new Date().getFullYear(),
+    'publisher': {
+      '@type': 'Organization',
+      'name': 'mma.box',
+      'logo': {
+        '@type': 'ImageObject',
+        'url': 'https://www.mma.box/android-chrome-512x512.png',
+        'width': 512,
+        'height': 512
+      }
     }
+  };
+
+  // Sport Organization schema
+  const sportOrgSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SportsOrganization',
+    'name': 'mma.box',
+    'url': 'https://www.mma.box',
+    'logo': 'https://www.mma.box/android-chrome-512x512.png',
+    'sport': 'Mixed Martial Arts',
+    'description': 'Providing comprehensive coverage of mixed martial arts events, fighters, and news across all major promotions',
+    'memberOf': [
+      {
+        '@type': 'Organization',
+        'name': 'Combat Sports Media Association'
+      }
+    ]
+  };
+
+  // Upcoming event schema
+  const upcomingEventSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SportsEvent',
+    'name': upcomingEvents[0].title,
+    'description': `Watch ${upcomingEvents[0].mainEvent} and other exciting fights at ${upcomingEvents[0].title}`,
+    'startDate': new Date(upcomingEvents[0].date).toISOString(),
+    'location': {
+      '@type': 'Place',
+      'name': upcomingEvents[0].location,
+      'address': {
+        '@type': 'PostalAddress',
+        'addressLocality': upcomingEvents[0].location
+      }
+    },
+    'competitor': [
+      {
+        '@type': 'Person',
+        'name': upcomingEvents[0].mainEvent.split(' vs. ')[0]
+      },
+      {
+        '@type': 'Person',
+        'name': upcomingEvents[0].mainEvent.split(' vs. ')[1]
+      }
+    ],
+    'url': `https://www.mma.box/events/${upcomingEvents[0].id}`
   };
 
   return (
@@ -154,6 +223,18 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(websiteSchema)
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(sportOrgSchema)
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(upcomingEventSchema)
         }}
       />
       
