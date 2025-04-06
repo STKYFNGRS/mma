@@ -10,11 +10,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: {
-    default: "mma.box - Ultimate MMA Hub | UFC, Bellator, ONE Championship Coverage",
+    default: "The Ultimate MMA Hub | UFC, Bellator, ONE Championship",
     template: "%s | mma.box"
   },
-  description: "Your premier destination for comprehensive MMA coverage including UFC, Bellator, ONE Championship events, fighter profiles, breaking news, rankings, and exclusive fight analysis.",
-  keywords: ["MMA", "UFC", "Bellator", "ONE Championship", "mixed martial arts", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu", "wrestling", "combat sports"],
+  description: "Your premier destination for comprehensive MMA coverage including UFC, Bellator, ONE Championship, fighter profiles, breaking news, rankings, and fight analysis.",
+  keywords: ["MMA", "UFC", "Bellator", "ONE Championship", "mixed martial arts", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu"],
   metadataBase: new URL('https://mma.box'),
   openGraph: {
     title: "Ultimate MMA Fan Hub",
