@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     default: "The Ultimate MMA Hub | UFC, Bellator, ONE Championship",
     template: "%s | mma.box"
   },
-  description: "Your premier destination for comprehensive MMA coverage including UFC, Bellator and ONE Championship.",
+  description: "Premier MMA coverage including UFC, Bellator and ONE Championship. Fighter profiles, exclusive interviews, fight analysis, and more.",
   keywords: ["MMA", "UFC", "Bellator", "ONE Championship", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu"],
   metadataBase: new URL('https://mma.box'),
   openGraph: {
