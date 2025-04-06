@@ -255,7 +255,7 @@ export default function Home() {
             <h1 className="text-5xl md:text-7xl font-extrabold mb-4 text-white">
               <span className="inline-block mb-2">Your Ultimate</span><br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-700">
-                MMA Destination
+                MMA Hub for UFC and Bellator Coverage
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl">

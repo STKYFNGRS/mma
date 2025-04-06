@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: {
-    default: "The Ultimate MMA Hub | UFC, Bellator, ONE Championship",
+    default: "MMA Hub | Ultimate Guide to UFC, Bellator & MMA Fights",
     template: "%s | mma.box"
   },
   description: "Premier MMA coverage including UFC, Bellator and ONE Championship. Fighter profiles, exclusive interviews, fight analysis, and more.",
