@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   keywords: ["MMA", "UFC", "Bellator", "ONE Championship", "mixed martial arts", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu", "wrestling", "combat sports"],
   metadataBase: new URL('https://mma.box'),
   openGraph: {
-    title: "Ultimate Mixed Martial Arts Destination",
+    title: "Ultimate MMA Fan Hub",
     description: "Complete MMA coverage fighter profiles, exclusive interviews, fight analysis, and more",
     url: "https://www.mma.box",
     siteName: "mma.box",
