@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   keywords: ["MMA", "UFC", "Bellator", "ONE Championship", "mixed martial arts", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu", "wrestling", "combat sports"],
   metadataBase: new URL('https://mma.box'),
   openGraph: {
-    title: "mma.box - Ultimate Mixed Martial Arts Destination",
-    description: "Complete MMA coverage with live events, fighter profiles, exclusive interviews, fight analysis, and the latest breaking news from UFC, Bellator, and global promotions.",
+    title: "Ultimate Mixed Martial Arts Destination",
+    description: "Complete MMA coverage fighter profiles, exclusive interviews, fight analysis, and more",
     url: "https://www.mma.box",
     siteName: "mma.box",
     images: [
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "mma.box - Ultimate MMA Coverage | UFC, Bellator & More",
+    title: "Ultimate MMA Coverage | UFC, Bellator & More",
     description: "Follow the latest MMA events, fighters, and breaking news from the world's top promotions",
-    creator: "@mmabox",
+    creator: "@dudedotbox",
     images: ["/android-chrome-512x512.png"],
   },
   robots: {
