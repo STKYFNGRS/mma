@@ -83,7 +83,7 @@ const featuredFighters = [
 ];
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('events');
+  const [activeTab, setActiveTab] = useState('news');
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -298,7 +298,7 @@ export default function Home() {
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-900/20 to-transparent"></div>
         <div className="flex justify-center mb-8">
           <div className="inline-flex rounded-lg border border-gray-800 p-1 bg-black/80 backdrop-blur-sm shadow-lg shadow-black/20">
-            {['events', 'news', 'fighters'].map((tab) => (
+            {['news', 'events', 'fighters'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -316,49 +316,6 @@ export default function Home() {
         
         {/* Tab Content */}
         <div className="mt-8">
-          {/* Events Tab */}
-          <div className={`transition-opacity duration-300 ${activeTab === 'events' ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden absolute'}`}>
-            <h2 className="text-3xl font-bold mb-6 text-gray-100">Upcoming Events</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingEvents.map((event) => (
-                <div key={event.id} className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/20 transition-all hover:-translate-y-1 border border-gray-800/50">
-                  {/* Image placeholder - replace with actual event poster */}
-                  <div className="h-48 bg-gray-800 relative">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-gray-500">[Event Poster]</span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-5">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-red-500 font-medium text-sm">{event.date}</span>
-                      <span className="bg-black text-xs px-2 py-1 rounded text-gray-300 border border-gray-800/50">{event.location}</span>
-                    </div>
-                    <h3 className="text-xl font-bold mb-2 text-white">{event.title}</h3>
-                    <p className="text-gray-400 mb-4">Main: {event.mainEvent}</p>
-                    <Link 
-                      href={`/events/${event.id}`} 
-                      className="inline-block w-full text-center bg-red-600/20 hover:bg-red-600/30 text-red-500 py-2 rounded-lg text-sm font-medium transition-colors"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="text-center mt-8">
-              <Link 
-                href="/events" 
-                className="inline-flex items-center text-red-500 hover:text-red-400"
-              >
-                View All Events 
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-          
           {/* News Tab */}
           <div className={`transition-opacity duration-300 ${activeTab === 'news' ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden absolute'}`}>
             <h2 className="text-3xl font-bold mb-6 text-gray-100">Latest News & Updates</h2>
@@ -397,6 +354,49 @@ export default function Home() {
                 className="inline-flex items-center text-red-500 hover:text-red-400"
               >
                 View All News
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+          
+          {/* Events Tab */}
+          <div className={`transition-opacity duration-300 ${activeTab === 'events' ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden absolute'}`}>
+            <h2 className="text-3xl font-bold mb-6 text-gray-100">Upcoming Events</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {upcomingEvents.map((event) => (
+                <div key={event.id} className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/20 transition-all hover:-translate-y-1 border border-gray-800/50">
+                  {/* Image placeholder - replace with actual event poster */}
+                  <div className="h-48 bg-gray-800 relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-gray-500">[Event Poster]</span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-5">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-red-500 font-medium text-sm">{event.date}</span>
+                      <span className="bg-black text-xs px-2 py-1 rounded text-gray-300 border border-gray-800/50">{event.location}</span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2 text-white">{event.title}</h3>
+                    <p className="text-gray-400 mb-4">Main: {event.mainEvent}</p>
+                    <Link 
+                      href={`/events/${event.id}`} 
+                      className="inline-block w-full text-center bg-red-600/20 hover:bg-red-600/30 text-red-500 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-8">
+              <Link 
+                href="/events" 
+                className="inline-flex items-center text-red-500 hover:text-red-400"
+              >
+                View All Events 
                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
