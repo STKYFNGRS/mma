@@ -207,8 +207,7 @@ export default async function NewsArticlePage({ params }: { params: { id: string
                         alt={article.title} 
                         width={300}
                         height={300}
-                        className="object-cover rounded-lg float-left mr-6 mb-4"
-                        priority
+                        className="object-cover rounded-lg mr-6 mb-4"
                      />
                  </span>
              )}
