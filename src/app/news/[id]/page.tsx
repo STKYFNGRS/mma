@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
           publishedTimeString = new Date(article.published_at).toISOString();
       } catch { /* ignore date format error - remove unused 'e' */ }
   }
-
+  
   return {
     title: article.title,
     description: article.summary || 'Read the latest MMA news article.', // Fallback description
@@ -189,8 +189,8 @@ export default async function NewsArticlePage({ params }: { params: { id: string
             {/* Conditionally render Author */} 
             {article.author && (
                 <>
-                    <span>By {article.author}</span>
-                    <span>•</span>
+            <span>By {article.author}</span>
+            <span>•</span>
                 </>
             )}
             <time dateTime={publishedISODate}>{displayDate}</time>
