@@ -2,123 +2,173 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { neon } from '@neondatabase/serverless';
+import { format } from 'date-fns';
+import Image from 'next/image';
+import type { NewsArticle } from '@/types';
 
-// Mock data for news articles
-const newsData = {
-  1: {
-    id: 1,
-    title: 'Champion Announces Retirement After Historic Run',
-    excerpt: 'After 10 consecutive title defenses, the legendary champion steps away from the octagon...',
-    date: 'April 3, 2025',
-    publishISODate: '2025-04-03T14:30:00Z',
-    category: 'Breaking',
-    author: 'John Smith',
-    authorUrl: 'https://www.mma.box/authors/john-smith',
-    content: 'In a shocking announcement that has sent ripples through the MMA world, the long-reigning champion has decided to hang up the gloves after an unprecedented run of dominance. The decision comes after their historic tenth consecutive title defense last month, cementing their legacy as one of the all-time greats in the sport.\n\nIn an emotional press conference, the champion cited the desire to leave on their own terms and focus on family and other business ventures outside of fighting. The promotion has not yet announced plans for the now-vacant title, though a tournament featuring the top contenders is reportedly being considered.',
-    imageUrl: '/next.svg', // placeholder
-    tags: ['retirement', 'championship', 'title defense', 'legacy']
-  },
-  2: {
-    id: 2,
-    title: 'New Tournament Format Announced for Next Season',
-    excerpt: 'The promotion unveiled plans for a revolutionary tournament structure beginning next year...',
-    date: 'April 2, 2025',
-    publishISODate: '2025-04-02T10:15:00Z',
-    category: 'News',
-    author: 'Sarah Johnson',
-    authorUrl: 'https://www.mma.box/authors/sarah-johnson',
-    content: 'In an exciting development for MMA fans, a major promotion has announced a complete overhaul of its competition format starting next season. The new structure will feature a year-long tournament across all weight classes, with fighters earning points based on their performances.\n\nThe top eight fighters in each division at the end of the regular season will advance to the championship playoffs, where they will compete in a single-elimination tournament to crown the champion. This innovative approach aims to ensure that the most deserving fighters get title opportunities while creating more meaningful and consequential matchups throughout the year.',
-    imageUrl: '/next.svg', // placeholder
-    tags: ['tournament', 'season format', 'championship', 'competition']
-  },
-  3: {
-    id: 3,
-    title: 'Rising Star Signs Multi-Fight Contract After Knockout Win',
-    excerpt: 'Following an impressive victory last weekend, the undefeated prospect has signed a new deal...',
-    date: 'March 30, 2025',
-    publishISODate: '2025-03-30T18:45:00Z',
-    category: 'Contracts',
-    author: 'Mike Williams',
-    authorUrl: 'https://www.mma.box/authors/mike-williams',
-    content: 'Fresh off a spectacular knockout victory that had fans on their feet, the rising star has secured their future with a lucrative multi-fight contract extension. The undefeated prospect has been turning heads in the MMA world with their devastating finishing ability and charismatic personality.\n\nThe new deal, reportedly worth several million dollars, will keep them with the promotion for at least five more fights. Promotion officials have indicated that with another win, they could find themselves in title contention before the end of the year. Their next bout is expected to be announced in the coming weeks, with rumors suggesting it could be against a top-five opponent.',
-    imageUrl: '/next.svg', // placeholder
-    tags: ['contract', 'knockout', 'prospect', 'undefeated']
+// Remove Mock data for news articles
+// const newsData = { ... };
+
+// Fetch data function (can be reused by generateMetadata and page)
+async function getArticleData(idOrSlug: string): Promise<NewsArticle | null> {
+  // If it's a placeholder, return null (or a placeholder object if needed by metadata)
+  if (idOrSlug.startsWith('placeholder-')) {
+    return null; // Indicate placeholder, page component will handle rendering
   }
-};
+
+  try {
+    const sql = neon(process.env.DATABASE_URL!);
+    let article: NewsArticle | null = null;
+
+    // Check if idOrSlug is numeric (ID) or string (slug)
+    const potentialId = Number(idOrSlug);
+    if (!isNaN(potentialId)) {
+      // Fetch by ID
+      const result = await sql` 
+        SELECT id, title, slug, summary, content, image_url, published_at, status, author
+        FROM news_articles
+        WHERE id = ${potentialId} AND status = 'published'
+      `;
+      article = (result[0] as NewsArticle) ?? null;
+    } else {
+      // Fetch by Slug
+      const result = await sql` 
+        SELECT id, title, slug, summary, content, image_url, published_at, status, author
+        FROM news_articles
+        WHERE slug = ${idOrSlug} AND status = 'published'
+      `;
+      article = (result[0] as NewsArticle) ?? null;
+    }
+    return article;
+  } catch (error) {
+    console.error("Error fetching article:", error);
+    return null; // Return null on error
+  }
+}
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const articleId = Number(params.id);
-  const article = newsData[articleId as keyof typeof newsData];
+  const article = await getArticleData(params.id);
   
   if (!article) {
+    // Handle placeholder or truly not found
+    const isPlaceholder = params.id.startsWith('placeholder-');
     return {
-      title: 'Article Not Found',
+      title: isPlaceholder ? 'News Article Placeholder' : 'Article Not Found',
+      description: isPlaceholder ? 'Loading news article content...' : 'The article you are looking for could not be found.',
     };
   }
   
+  // Format date safely
+  let publishedTimeString: string | undefined;
+  if (article.published_at) {
+      try {
+          publishedTimeString = new Date(article.published_at).toISOString();
+      } catch { /* ignore date format error - remove unused 'e' */ }
+  }
+
   return {
     title: article.title,
-    description: article.excerpt,
-    keywords: ['MMA news', ...article.tags],
+    description: article.summary || 'Read the latest MMA news article.', // Fallback description
+    keywords: ['MMA news', article.title], // Add more specific keywords if available
     openGraph: {
       title: article.title,
-      description: article.excerpt,
-      url: `https://www.mma.box/news/${articleId}`,
+      description: article.summary || '',
+      url: `https://www.mma.box/news/${article.slug || article.id}`,
       type: 'article',
-      images: [
+      images: article.image_url ? [
         {
-          url: article.imageUrl,
-          width: 1200,
-          height: 630,
+          url: article.image_url, // Use actual image URL
+          width: 1200, // Adjust if known
+          height: 630,  // Adjust if known
           alt: article.title,
         },
-      ],
-      publishedTime: article.publishISODate,
-      authors: [article.authorUrl],
-      tags: article.tags,
+      ] : undefined,
+      publishedTime: publishedTimeString, 
+      // authors: [article.authorUrl], // Add if author data exists
+      // tags: article.tags, // Add if tag data exists
     },
+    alternates: {
+        canonical: `https://www.mma.box/news/${article.slug || article.id}`,
+    }
   };
 }
 
-export default function NewsArticlePage({ params }: { params: { id: string } }) {
-  const articleId = Number(params.id);
+// Placeholder component for the full article page
+const ArticlePlaceholder = () => (
+  <div className="bg-black text-white min-h-screen animate-pulse">
+    <div className="container mx-auto px-6 py-16">
+      <div className="mb-4">
+        <div className="h-6 bg-red-900/50 rounded w-1/4 mb-4"></div>
+        <div className="h-10 bg-gray-700 rounded w-3/4 mb-2"></div>
+        <div className="h-5 bg-gray-600 rounded w-1/2"></div>
+      </div>
+      <div className="h-60 bg-gray-800 rounded-lg mb-6"></div>
+      <div className="max-w-3xl mx-auto">
+        <div className="space-y-4 mb-8">
+          <div className="h-5 bg-gray-700 rounded w-full"></div>
+          <div className="h-5 bg-gray-700 rounded w-full"></div>
+          <div className="h-5 bg-gray-700 rounded w-5/6"></div>
+          <div className="h-5 bg-gray-700 rounded w-full"></div>
+          <div className="h-5 bg-gray-700 rounded w-3/4"></div>
+          <div className="h-5 bg-gray-700 rounded w-full"></div>
+          <div className="h-5 bg-gray-700 rounded w-full"></div>
+        </div>
+        <div className="flex flex-wrap gap-2 mb-8">
+          <div className="h-6 bg-gray-800 rounded-full w-20"></div>
+          <div className="h-6 bg-gray-800 rounded-full w-24"></div>
+          <div className="h-6 bg-gray-800 rounded-full w-16"></div>
+        </div>
+        <div className="flex gap-4">
+          <div className="h-12 bg-gray-800 rounded-lg w-32"></div>
+          <div className="h-12 bg-red-900/50 rounded-lg w-24"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+export default async function NewsArticlePage({ params }: { params: { id: string } }) {
+  // Check if it's a placeholder request
+  if (params.id.startsWith('placeholder-')) {
+    return <ArticlePlaceholder />;
+  }
+
+  // Fetch real article data
+  const article = await getArticleData(params.id);
   
-  // Check if article exists in our data
-  if (!newsData[articleId as keyof typeof newsData]) {
+  // If no article found for a non-placeholder ID, trigger 404
+  if (!article) {
     notFound();
   }
   
-  const article = newsData[articleId as keyof typeof newsData];
-  
-  // Schema.org structured data for news article
+  // Format date safely
+  let displayDate = 'Date unavailable';
+  let publishedISODate: string | undefined;
+  if (article.published_at) {
+      try {
+          const dateObj = new Date(article.published_at);
+          displayDate = format(dateObj, 'MMMM d, yyyy');
+          publishedISODate = dateObj.toISOString();
+      } catch { /* ignore date format error - remove unused 'e' */ }
+  }
+
+  // Schema.org structured data for news article (using fetched data)
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
     'headline': article.title,
-    'description': article.excerpt,
-    'image': article.imageUrl,
-    'datePublished': article.publishISODate,
-    'dateModified': article.publishISODate,
-    'author': {
-      '@type': 'Person',
-      'name': article.author,
-      'url': article.authorUrl
-    },
-    'publisher': {
-      '@type': 'Organization',
-      'name': 'mma.box',
-      'logo': {
-        '@type': 'ImageObject',
-        'url': 'https://www.mma.box/android-chrome-512x512.png',
-        'width': 512,
-        'height': 512
-      }
-    },
+    'description': article.summary,
+    'image': article.image_url,
+    'datePublished': publishedISODate,
+    'dateModified': publishedISODate, // Assuming modified = published for now
+    // 'author': { ... }, // Add if author data available
+    // 'publisher': { ... }, // Add publisher info
     'mainEntityOfPage': {
       '@type': 'WebPage',
-      '@id': `https://www.mma.box/news/${articleId}`
+      '@id': `https://www.mma.box/news/${article.slug || article.id}`
     },
-    'keywords': article.tags.join(', ')
+    // 'keywords': article.tags.join(', ') // Add if tags available
   };
   
   return (
@@ -126,43 +176,50 @@ export default function NewsArticlePage({ params }: { params: { id: string } }) 
       {/* Add structured data script */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData)
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       
       <div className="container mx-auto px-6 py-16">
         <div className="mb-4">
-          <span className="inline-block bg-red-600 text-white text-sm px-3 py-1 rounded-full mb-4">
-            {article.category}
-          </span>
+          {/* <span className="inline-block bg-red-600 text-white text-sm px-3 py-1 rounded-full mb-4"> */}
+          {/*   {article.category} // Add if category exists */}
+          {/* </span> */}
           <h1 className="text-4xl font-bold mb-2">{article.title}</h1>
-          <div className="flex items-center gap-3 text-gray-400">
-            <span>By {article.author}</span>
-            <span>•</span>
-            <time dateTime={article.publishISODate}>{article.date}</time>
+          <div className="flex items-center gap-3 text-gray-400 mb-4">
+            {/* Conditionally render Author */} 
+            {article.author && (
+                <>
+                    <span>By {article.author}</span>
+                    <span>•</span>
+                </>
+            )}
+            <time dateTime={publishedISODate}>{displayDate}</time>
           </div>
-        </div>
-        
-        <div className="h-60 bg-gray-800 rounded-lg mb-6 flex items-center justify-center">
-          <span className="text-gray-500">[Featured Image]</span>
         </div>
         
         <div className="max-w-3xl mx-auto">
+          {/* Render content safely (assuming simple text for now) */}
           <div className="prose prose-invert mb-8 text-gray-300">
-            {article.content.split('\n\n').map((paragraph, i) => (
+             {article.image_url && (
+                 <span className="not-prose">
+                     <Image 
+                        src={article.image_url} 
+                        alt={article.title} 
+                        width={300}
+                        height={300}
+                        className="object-cover rounded-lg float-left mr-6 mb-4"
+                        priority
+                     />
+                 </span>
+             )}
+
+             {article.content ? article.content.split('\n\n').map((paragraph: string, i: number) => (
               <p key={i} className="mb-4">{paragraph}</p>
-            ))}
+            )) : <p>Article content not available.</p>}
           </div>
           
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            {article.tags.map(tag => (
-              <span key={tag} className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm">
-                #{tag}
-              </span>
-            ))}
-          </div>
+          {/* Tags - Add if tags data exists */}
+          {/* <div className="flex flex-wrap gap-2 mb-8"> ... </div> */}
           
           <div className="flex gap-4">
             <Link 
