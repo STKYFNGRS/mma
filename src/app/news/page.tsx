@@ -120,7 +120,8 @@ export default async function NewsPage() { // Make the component async
                           alt={item.title} 
                           width={307}
                           height={192}
-                          className="object-cover w-full h-full"
+                          className="h-full"
+                          style={{ width: 'auto' }}
                           priority={index < 3}
                         />
                       ) : (

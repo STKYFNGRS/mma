@@ -103,7 +103,8 @@ export default function HomepageContentTabs({
                             alt={item.title}
                             width={307}
                             height={192}
-                            className="object-cover w-full h-full"
+                            className="h-full"
+                            style={{ width: 'auto' }}
                             priority={index === 0}
                           />
                         ) : (
@@ -208,9 +209,10 @@ export default function HomepageContentTabs({
                          <Image 
                             src={fighter.image} 
                             alt={fighter.name} 
-                            width={128}
-                            height={128}
-                            className="object-cover rounded-full p-1" // Added padding if image is not perfectly circular
+                            width={307}
+                            height={192}
+                            className="h-full"
+                            style={{ width: 'auto' }}
                          />
                       ) : (
                          <div className="absolute inset-0 flex items-center justify-center rounded-full">
