@@ -118,9 +118,9 @@ export default async function NewsPage() { // Make the component async
                         <Image 
                           src={item.image_url} 
                           alt={item.title} 
-                          width={400}
-                          height={250}
-                          className="object-cover"
+                          width={307}
+                          height={192}
+                          className="object-cover w-full h-full"
                           priority={index < 3}
                         />
                       ) : (
