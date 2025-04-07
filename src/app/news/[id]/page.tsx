@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { neon } from '@neondatabase/serverless';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 import Image from 'next/image';
 import type { NewsArticle } from '@/types';
 
@@ -143,12 +143,12 @@ export default async function NewsArticlePage({ params }: { params: { id: string
   }
   
   // Format date safely
-  let displayDate = 'Date unavailable';
+  // let displayDate = 'Date unavailable';
   let publishedISODate: string | undefined;
   if (article.published_at) {
       try {
           const dateObj = new Date(article.published_at);
-          displayDate = format(dateObj, 'MMMM d, yyyy');
+          // displayDate = format(dateObj, 'MMMM d, yyyy');
           publishedISODate = dateObj.toISOString();
       } catch { /* ignore date format error - remove unused 'e' */ }
   }
@@ -193,7 +193,7 @@ export default async function NewsArticlePage({ params }: { params: { id: string
             <span>•</span>
                 </>
             )}
-            <time dateTime={publishedISODate}>{displayDate}</time>
+            {/* <time dateTime={publishedISODate}>{displayDate}</time> */}
           </div>
         </div>
         

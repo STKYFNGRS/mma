@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 // Import types from the new central file
 import type { NewsArticle, UpcomingEvent, FeaturedFighter } from '@/types';
 
@@ -82,11 +82,11 @@ export default function HomepageContentTabs({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {initialNewsItems.map((item, index) => {
                   // Ensure published_at is a Date object before formatting
-                  let displayDate = 'Date unavailable';
+                  // let displayDate = 'Date unavailable';
                   const itemDate = item.published_at;
                   if (itemDate) {
                     try {
-                       displayDate = format(new Date(itemDate), 'MMMM d, yyyy');
+                       // displayDate = format(new Date(itemDate), 'MMMM d, yyyy');
                     } catch (e) {
                       console.error("Error formatting date:", itemDate, e);
                       // Keep default 'Date unavailable'
@@ -114,7 +114,7 @@ export default function HomepageContentTabs({
                         )}
                       </div>
                       <div className="p-5">
-                        <div className="text-gray-400 text-sm mb-2">{displayDate}</div>
+                        {/* <time dateTime={dateTime} className=\"text-gray-400 text-sm mb-2 block\">{displayDate}</time> */}
                         <h3 className="text-lg font-bold mb-2 text-white hover:text-red-500 transition-colors">
                           <Link href={articleUrl}>{item.title}</Link>
                         </h3>

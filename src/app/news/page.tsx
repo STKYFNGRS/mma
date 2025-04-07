@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
 import { neon } from '@neondatabase/serverless';
-import { format } from 'date-fns'; // Ensure date-fns is installed: npm install date-fns
+// import { format } from 'date-fns'; // Ensure date-fns is installed: npm install date-fns
 import Image from 'next/image'; // Import next/image
 
 // Import the type from the central file
@@ -98,18 +98,18 @@ export default async function NewsPage() { // Make the component async
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {newsItems.map((item, index) => {
                 // Ensure published_at is a Date object before formatting
-                let displayDate = 'Date unavailable';
+                // let displayDate = 'Date unavailable';
                 const itemDate = item.published_at; // Use const
                 if (itemDate) {
                   try {
-                     displayDate = format(new Date(itemDate), 'MMMM d, yyyy');
+                     // displayDate = format(new Date(itemDate), 'MMMM d, yyyy');
                   } catch (e) {
                     console.error("Error formatting date:", itemDate, e);
                     // Keep default 'Date unavailable'
                   }
                 }
                 const articleUrl = `/news/${item.slug ?? item.id}`;
-                const dateTime = item.published_at ? format(new Date(item.published_at), 'yyyy-MM-dd') : undefined;
+                // const dateTime = item.published_at ? format(new Date(item.published_at), 'yyyy-MM-dd') : undefined;
 
                 return (
                   <article key={item.id} className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/10 transition-all border border-gray-800/50">
@@ -133,7 +133,7 @@ export default async function NewsPage() { // Make the component async
                     </div>
 
                     <div className="p-5">
-                      <time dateTime={dateTime} className="text-gray-400 text-sm mb-2 block">{displayDate}</time>
+                      {/* <time dateTime={dateTime} className="text-gray-400 text-sm mb-2 block">{displayDate}</time> */}
                       <h3 className="text-lg font-bold mb-2 text-white hover:text-red-500 transition-colors">
                         <Link href={articleUrl}>{item.title}</Link>
                       </h3>
