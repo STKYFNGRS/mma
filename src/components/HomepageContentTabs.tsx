@@ -107,7 +107,8 @@ export default function HomepageContentTabs({
                              alt={event.event_name || 'Event'} 
                              fill
                              style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                             className="transition-transform duration-300 group-hover:scale-105" 
+                             className="transition-transform duration-300 group-hover:scale-105"
+                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                          />
                      </div>
                  )}
@@ -139,6 +140,7 @@ export default function HomepageContentTabs({
                                  fill
                                  style={{ objectFit: 'cover' }}
                                  className="transition-transform duration-300 group-hover:scale-105"
+                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                              />
                          </div>
                     )}
@@ -161,20 +163,24 @@ export default function HomepageContentTabs({
            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 animate-fadeIn">
              {featuredFighters.length > 0 ? featuredFighters.map((fighter) => (
                  <div key={fighter.id} className="text-center bg-gray-800 rounded-lg shadow-lg p-4 group">
-                     <div className="relative w-24 h-24 mx-auto mb-3"> {/* Container for Image */} 
-                         <Image 
-                             src={fighter.image || '/images/fighter-placeholder.png'} 
-                             alt={fighter.name} 
-                             fill
-                             className="rounded-full object-cover border-2 border-gray-700 group-hover:border-red-600 transition-colors"
-                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw" // Example sizes, adjust as needed
-                         />
+                     <div className="relative w-24 h-24 mx-auto mb-3">
+                         {fighter.image ? (
+                             <Image 
+                                 src={fighter.image} 
+                                 alt={fighter.name} 
+                                 fill
+                                 className="rounded-full object-cover border-2 border-gray-700 group-hover:border-red-600 transition-colors"
+                                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                             />
+                         ) : (
+                             <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-600 text-gray-400">
+                                 {fighter.name.substring(0, 2).toUpperCase()}
+                             </div>
+                         )}
                      </div>
                      <h3 className="font-semibold text-white group-hover:text-red-500 transition-colors">{fighter.name}</h3>
                      <p className="text-sm text-gray-400">{fighter.division}</p>
                      <p className="text-xs text-gray-500">{fighter.record}</p>
-                     {/* Add Link to fighter profile page if available */}
-                     {/* <Link href={`/fighters/${fighter.id}`} className="text-indigo-400 hover:underline text-xs mt-1 inline-block">View Profile</Link> */}
                  </div>
              )) : (
                  <p className="text-gray-400 italic col-span-full text-center">No featured fighters found.</p>

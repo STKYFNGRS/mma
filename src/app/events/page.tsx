@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
-import { fetchPublishedEvents } from '../admin/eventActions';
+import { fetchPublishedEvents } from '@/lib/eventServices';
 import { formatEventDate } from '../../utils/dateUtils';
 
 export const metadata: Metadata = {
@@ -59,7 +59,8 @@ export default async function EventsPage() {
                         src={event.image_url} 
                         alt={event.event_name || 'Event Image'} 
                         fill 
-                        style={{ objectFit: 'cover' }} 
+                        style={{ objectFit: 'cover' }}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </div>
                   )}

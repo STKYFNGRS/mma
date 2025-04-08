@@ -5,41 +5,33 @@
 // Only import types needed
 import type { NewsArticle, FeaturedFighter } from '@/types'; // Keep FeaturedFighter for mock function return type
 import HomepageContentTabs, { EventCountdown } from '@/components/HomepageContentTabs';
-import { fetchUpcomingPublishedEvents } from './admin/eventActions'; // Import event action
+import { fetchUpcomingPublishedEvents } from '@/lib/eventServices'; // Import from new lib services
 // import HeroSection from '@/components/HeroSection'; // Removed problematic import
 // import { fetchLatestNews } from './admin/newsActions'; 
 // import { fetchFeaturedFighters } from './admin/fighterActions';
 import Link from 'next/link';
-import { fetchAllArticles } from './admin/actions'; // Import for news fetching
+import { fetchLatestNews } from '@/lib/newsServices'; // Import from new lib services
 
 // Example function to get mock fighters (using imported FeaturedFighter type)
 async function getMockFighters(): Promise<FeaturedFighter[]> {
     // In a real app, fetch from your API/DB
     return [
-        { id: 1, name: 'Jon Jones', record: '27-1-0 (1 NC)', division: 'Heavyweight', image: '/images/fighters/jon_jones.png' }, 
-        { id: 2, name: 'Alexander Volkanovski', record: '26-3-0', division: 'Featherweight', image: '/images/fighters/volk.png' },
-        { id: 3, name: 'Islam Makhachev', record: '25-1-0', division: 'Lightweight', image: '/images/fighters/islam.png' },
-        { id: 4, name: 'Sean O\'Malley', record: '17-1-0 (1 NC)', division: 'Bantamweight', image: '/images/fighters/omalley.png' },
-        { id: 5, name: 'Alex Pereira', record: '9-2-0', division: 'Middleweight', image: '/images/fighters/pereira.png' }
+        { id: 1, name: 'Jon Jones', record: '27-1-0 (1 NC)', division: 'Heavyweight', image: '' }, 
+        { id: 2, name: 'Alexander Volkanovski', record: '26-3-0', division: 'Featherweight', image: '' },
+        { id: 3, name: 'Islam Makhachev', record: '25-1-0', division: 'Lightweight', image: '' },
+        { id: 4, name: 'Sean O\'Malley', record: '17-1-0 (1 NC)', division: 'Bantamweight', image: '' },
+        { id: 5, name: 'Alex Pereira', record: '9-2-0', division: 'Middleweight', image: '' }
     ];
 }
 
 // Function to fetch published news articles
 async function fetchPublishedNews(): Promise<NewsArticle[]> {
-    // Get all articles
-    const allArticles = await fetchAllArticles();
+    // Attempt to get real news from the database
+    const news = await fetchLatestNews(5);
     
-    // Filter only published ones
-    const publishedArticles = allArticles.filter(article => 
-        article.status === 'published'
-    );
-    
-    // Sort by published date (newest first)
-    return publishedArticles.sort((a, b) => {
-        const dateA = a.published_at ? new Date(a.published_at).getTime() : 0;
-        const dateB = b.published_at ? new Date(b.published_at).getTime() : 0;
-        return dateB - dateA;
-    }).slice(0, 5); // Return only the 5 most recent articles
+    // If no news is available (e.g., table doesn't exist yet), return empty array
+    // The UI component already handles displaying a message when no news is available
+    return news;
 }
 
 // Original Mock Data (keeping for structure reference)

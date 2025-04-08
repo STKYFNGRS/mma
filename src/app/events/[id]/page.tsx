@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { fetchPublishedEventById } from '../../admin/eventActions';
+import { fetchPublishedEventById } from '@/lib/eventServices';
 import { formatEventDate } from '../../../utils/dateUtils';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
 import type { Metadata } from 'next';
@@ -73,7 +73,8 @@ export default async function EventDetailPage({ params }: Props) {
                             alt={event.event_name || 'Event Banner'} 
                             fill 
                             style={{ objectFit: 'cover', objectPosition: 'center top' }} 
-                            priority 
+                            priority
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
                         />
                     </div>
                 )}
