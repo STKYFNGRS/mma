@@ -1,255 +1,186 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from 'next/image'; // Import Image
 // import { format } from 'date-fns';
 // Import types from the new central file
-import type { NewsArticle, UpcomingEvent, FeaturedFighter } from '@/types';
+import type { NewsArticle, Event, FeaturedFighter } from '@/types';
+import { formatEventDate } from '@/utils/dateUtils'; // Adjust path if needed
 
 // Define the expected shape of props using imported types
 interface HomepageContentTabsProps {
-  initialNewsItems: NewsArticle[];
-  upcomingEvents: UpcomingEvent[];
-  featuredFighters: FeaturedFighter[]; // Add fighters
-  newsError: string | null;
+  latestNews: NewsArticle[];
+  upcomingEvents: Event[]; // Use real Event type
+  featuredFighters: FeaturedFighter[];
 }
 
-// Placeholder component for News card skeleton
-const NewsCardPlaceholder = () => (
-  <div className="bg-black/80 rounded-xl overflow-hidden shadow-lg border border-gray-800/50 animate-pulse">
-    <div className="h-48 bg-gray-700"></div>
-    <div className="p-5">
-      <div className="h-4 bg-gray-700 rounded w-1/3 mb-2"></div>
-      <div className="h-6 bg-gray-600 rounded w-3/4 mb-2"></div>
-      <div className="h-4 bg-gray-700 rounded w-full mb-1"></div>
-      <div className="h-4 bg-gray-700 rounded w-5/6 mb-4"></div>
-      <div className="h-5 bg-red-900 rounded w-1/4"></div>
+// Client-side countdown component for real-time updates
+export function EventCountdown({ event }: { event: Event }) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  
+  useEffect(() => {
+    // Skip if no date
+    if (!event.date) return;
+    
+    const eventDate = new Date(event.date);
+    
+    const updateCounter = () => {
+      const now = new Date();
+      if (eventDate > now) {
+        const timeDiff = eventDate.getTime() - now.getTime();
+        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+        setTimeLeft({ days, hours, minutes, seconds });
+      }
+    };
+    
+    // Update immediately then set interval
+    updateCounter();
+    const interval = setInterval(updateCounter, 1000);
+    
+    // Cleanup
+    return () => clearInterval(interval);
+  }, [event.date]);
+  
+  return (
+    <div className="grid grid-cols-4 gap-3 text-center">
+      <div className="px-3 py-2 bg-black rounded-lg">
+        <div className="text-2xl font-bold text-white">{timeLeft.days}</div>
+        <div className="text-xs text-gray-500">DAYS</div>
+      </div>
+      <div className="px-3 py-2 bg-black rounded-lg">
+        <div className="text-2xl font-bold text-white">{timeLeft.hours}</div>
+        <div className="text-xs text-gray-500">HRS</div>
+      </div>
+      <div className="px-3 py-2 bg-black rounded-lg">
+        <div className="text-2xl font-bold text-white">{timeLeft.minutes}</div>
+        <div className="text-xs text-gray-500">MIN</div>
+      </div>
+      <div className="px-3 py-2 bg-black rounded-lg">
+        <div className="text-2xl font-bold text-white">{timeLeft.seconds}</div>
+        <div className="text-xs text-gray-500">SEC</div>
+      </div>
     </div>
-  </div>
-);
+  );
+}
 
 export default function HomepageContentTabs({
-  initialNewsItems,
+  latestNews,
   upcomingEvents,
-  featuredFighters, // Receive fighters data
-  newsError
+  featuredFighters
 }: HomepageContentTabsProps) {
-  const [activeTab, setActiveTab] = useState('news');
-
-  const tabs = ['news', 'events', 'fighters']; // Add 'fighters' back
+  const [activeTab, setActiveTab] = useState('events');
 
   return (
-    <section className="container mx-auto px-6 py-8 relative">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-900/20 to-transparent"></div>
-
+    <section className="container mx-auto px-4 py-8 md:py-12">
       {/* Tab Buttons */}
-      <div className="flex justify-center mb-8">
-        <div className="inline-flex rounded-lg border border-gray-800 p-1 bg-black/80 backdrop-blur-sm shadow-lg shadow-black/20">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2 rounded-md font-medium transition-all ${
-                activeTab === tab
-                  ? 'bg-red-600 text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
+      <div className="flex justify-center space-x-2 md:space-x-4 mb-8">
+        {['events', 'news', 'fighters'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 md:px-6 md:py-2.5 rounded-full text-sm md:text-base font-semibold transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${ 
+              activeTab === tab 
+                ? 'bg-red-600 text-white shadow-md' 
+                : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+          >
+            {tab === 'events' ? 'Upcoming Events' : tab === 'news' ? 'Latest News' : 'Featured Fighters'}
+          </button>
+        ))}
       </div>
 
       {/* Tab Content */}
-      <div className="mt-8 min-h-[400px] relative">
-        {/* News Tab */}
-        <div className={`transition-opacity duration-300 ease-in-out ${activeTab === 'news' ? 'opacity-100' : 'opacity-0 invisible pointer-events-none'}`}>
-          <div className={`${activeTab !== 'news' ? 'absolute inset-0 w-full' : 'w-full'}`}> {/* Ensure width is maintained */} 
-            <h2 className="text-3xl font-bold mb-6 text-gray-100">Latest News & Updates</h2>
-            {newsError && <p className="text-red-500">{newsError}</p>}
-            
-            {/* Show placeholders if no error and no items */}
-            {!newsError && initialNewsItems.length === 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map(i => <NewsCardPlaceholder key={`placeholder-${i}`} />)}
-              </div>
-            )}
-
-            {/* Show actual news items if available */}
-            {!newsError && initialNewsItems.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {initialNewsItems.map((item, index) => {
-                  // Ensure published_at is a Date object before formatting
-                  // let displayDate = 'Date unavailable';
-                  const itemDate = item.published_at;
-                  if (itemDate) {
-                    try {
-                       // displayDate = format(new Date(itemDate), 'MMMM d, yyyy');
-                    } catch (e) {
-                      console.error("Error formatting date:", itemDate, e);
-                      // Keep default 'Date unavailable'
-                    }
-                  }
-                  const articleUrl = `/news/${item.slug ?? item.id}`;
-
-                  return (
-                    <div key={item.id} className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/10 transition-all border border-gray-800/50">
-                      <div className="h-48 bg-gray-800 relative flex items-center justify-center overflow-hidden">
-                        {item.image_url ? (
-                          <Image
-                            src={item.image_url}
-                            alt={item.title}
-                            width={307}
-                            height={192}
-                            className="h-full"
-                            style={{ width: 'auto' }}
-                            priority={index === 0}
-                          />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-gray-500">[News Image Placeholder]</span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-5">
-                        {/* <time dateTime={dateTime} className=\"text-gray-400 text-sm mb-2 block\">{displayDate}</time> */}
-                        <h3 className="text-lg font-bold mb-2 text-white hover:text-red-500 transition-colors">
-                          <Link href={articleUrl}>{item.title}</Link>
-                        </h3>
-                        {item.summary && (
-                          <p className="text-gray-400 text-sm line-clamp-2">{item.summary}</p>
-                        )}
-                        <Link
-                          href={articleUrl}
-                          className="inline-block mt-4 text-red-500 hover:text-red-400 text-sm font-medium"
-                        >
-                          Read More →
-                        </Link>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-            <div className="text-center mt-8">
-              <Link
-                href="/news"
-                className="inline-flex items-center text-red-500 hover:text-red-400"
-              >
-                View All News
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Events Tab */}
-        <div className={`transition-opacity duration-300 ease-in-out ${activeTab === 'events' ? 'opacity-100' : 'opacity-0 invisible pointer-events-none'}`}>
-          <div className={`${activeTab !== 'events' ? 'absolute inset-0 w-full' : 'w-full'}`}> {/* Ensure width is maintained */}
-            <h2 className="text-3xl font-bold mb-6 text-gray-100">Upcoming Events</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {upcomingEvents.map((event) => (
-                  // Event Card Component (Using original structure)
-                  <div key={event.id} className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/20 transition-all hover:-translate-y-1 border border-gray-800/50">
-                    <div className="h-48 bg-gray-800 relative">
-                      {/* Using placeholder image - update if needed */}
-                      <Image src={event.image} alt={event.title} fill sizes="33vw" className="object-contain p-8 opacity-10" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-gray-500">[Event Poster Placeholder]</span>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-red-500 font-medium text-sm">{event.date}</span>
-                        <span className="bg-black text-xs px-2 py-1 rounded text-gray-300 border border-gray-800/50">{event.location}</span>
-                      </div>
-                      <h3 className="text-xl font-bold mb-2 text-white">{event.title}</h3>
-                      <p className="text-gray-400 mb-4">Main: {event.mainEvent}</p>
-                      <Link
-                        href={`/events/${event.id}`} // Assuming event IDs correspond to URLs
-                        className="inline-block w-full text-center bg-red-600/20 hover:bg-red-600/30 text-red-500 py-2 rounded-lg text-sm font-medium transition-colors"
-                      >
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="text-center mt-8">
-                <Link
-                  href="/events"
-                  className="inline-flex items-center text-red-500 hover:text-red-400"
-                >
-                  View All Events
-                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-          </div>
-        </div>
-
-        {/* Fighters Tab - Added Back */}
-        <div className={`transition-opacity duration-300 ease-in-out ${activeTab === 'fighters' ? 'opacity-100' : 'opacity-0 invisible pointer-events-none'}`}>
-           <div className={`${activeTab !== 'fighters' ? 'absolute inset-0 w-full' : 'w-full'}`}> {/* Ensure width is maintained */} 
-             <h2 className="text-3xl font-bold mb-6 text-gray-100">Featured Fighters</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {featuredFighters.map((fighter) => (
-                  <div 
-                    key={fighter.id} 
-                    className="bg-black/80 rounded-xl overflow-hidden shadow-lg hover:shadow-red-600/10 transition-all border border-gray-800/50 p-6 text-center"
-                  >
-                    {/* Fighter Image - Circle */}
-                    <div className="w-32 h-32 mx-auto bg-gray-800 rounded-full mb-4 relative border-2 border-red-900/20">
-                      {fighter.image ? (
+      <div className="min-h-[300px]">
+        {/* Upcoming Events Tab */} 
+        {activeTab === 'events' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fadeIn">
+            {upcomingEvents.length > 0 ? upcomingEvents.map((event) => (
+              <Link href={`/events/${event.id}`} key={event.id} className="block bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+                 {event.image_url && (
+                     <div className="relative w-full aspect-[21/9]"> {/* Updated to match detail page */} 
                          <Image 
-                            src={fighter.image} 
-                            alt={fighter.name} 
-                            width={307}
-                            height={192}
-                            className="h-full"
-                            style={{ width: 'auto' }}
+                             src={event.image_url} 
+                             alt={event.event_name || 'Event'} 
+                             fill
+                             style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                             className="transition-transform duration-300 group-hover:scale-105" 
                          />
-                      ) : (
-                         <div className="absolute inset-0 flex items-center justify-center rounded-full">
-                          <span className="text-gray-500">[Fighter]</span>
-                         </div>
-                      )}
-                    </div>
-                    
-                    <h3 className="text-xl font-bold mb-1 text-white">{fighter.name}</h3>
-                    <p className="text-red-500 font-medium mb-2">{fighter.division}</p>
-                    <div className="inline-block px-3 py-1 bg-black border border-gray-800/50 rounded-full text-sm text-gray-300 mb-4">
-                      {fighter.record}
-                    </div>
-                    
-                    <Link 
-                      href={`/fighters/${fighter.id}`} // Assuming fighter IDs correspond to URLs 
-                      className="inline-block w-full text-center border border-red-600 text-red-500 hover:bg-red-600 hover:text-white py-2 rounded-lg text-sm font-medium transition-colors"
-                    >
-                      View Profile
-                    </Link>
-                  </div>
-                ))}
-              </div>
-              <div className="text-center mt-8">
-                <Link 
-                  href="/fighters" 
-                  className="inline-flex items-center text-red-500 hover:text-red-400"
-                >
-                  View All Fighters
-                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-           </div>
-        </div>
+                     </div>
+                 )}
+                 <div className="p-4">
+                    <p className="text-xs text-indigo-400 font-semibold mb-1 uppercase tracking-wider">{event.league}</p>
+                    <h3 className="text-lg font-bold text-white mb-1 truncate group-hover:text-red-500 transition-colors" title={event.event_name || event.main_card || 'Event'}>
+                         {event.event_name || event.main_card}
+                     </h3>
+                     <p className="text-sm text-gray-400 mb-1">{formatEventDate(event.date)}</p>
+                     <p className="text-sm text-gray-500 truncate">{event.location || 'Location TBD'}</p>
+                 </div>
+               </Link>
+            )) : (
+                 <p className="text-gray-400 italic col-span-full text-center">No upcoming events found.</p>
+            )}
+          </div>
+        )}
 
+        {/* Latest News Tab */}
+        {activeTab === 'news' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fadeIn">
+            {latestNews.length > 0 ? latestNews.map((article) => (
+                <Link href={`/news/${article.slug}`} key={article.id} className="block bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+                    {article.image_url && (
+                         <div className="relative w-full h-40"> {/* Container for Image */} 
+                             <Image 
+                                 src={article.image_url} 
+                                 alt={article.title || 'News'} 
+                                 fill
+                                 style={{ objectFit: 'cover' }}
+                                 className="transition-transform duration-300 group-hover:scale-105"
+                             />
+                         </div>
+                    )}
+                    <div className="p-4">
+                         <h3 className="text-lg font-bold text-white mb-1 truncate group-hover:text-red-500 transition-colors" title={article.title}>
+                             {article.title}
+                         </h3>
+                         <p className="text-sm text-gray-400 mb-1 line-clamp-2">{article.summary}</p>
+                         <p className="text-xs text-gray-500">{article.published_at ? formatEventDate(article.published_at) : 'Date unknown'}</p>
+                     </div>
+                </Link>
+            )) : (
+                 <p className="text-gray-400 italic col-span-full text-center">No latest news found.</p>
+            )}
+          </div>
+        )}
+
+        {/* Featured Fighters Tab */}
+        {activeTab === 'fighters' && (
+           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 animate-fadeIn">
+             {featuredFighters.length > 0 ? featuredFighters.map((fighter) => (
+                 <div key={fighter.id} className="text-center bg-gray-800 rounded-lg shadow-lg p-4 group">
+                     <div className="relative w-24 h-24 mx-auto mb-3"> {/* Container for Image */} 
+                         <Image 
+                             src={fighter.image || '/images/fighter-placeholder.png'} 
+                             alt={fighter.name} 
+                             fill
+                             className="rounded-full object-cover border-2 border-gray-700 group-hover:border-red-600 transition-colors"
+                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw" // Example sizes, adjust as needed
+                         />
+                     </div>
+                     <h3 className="font-semibold text-white group-hover:text-red-500 transition-colors">{fighter.name}</h3>
+                     <p className="text-sm text-gray-400">{fighter.division}</p>
+                     <p className="text-xs text-gray-500">{fighter.record}</p>
+                     {/* Add Link to fighter profile page if available */}
+                     {/* <Link href={`/fighters/${fighter.id}`} className="text-indigo-400 hover:underline text-xs mt-1 inline-block">View Profile</Link> */}
+                 </div>
+             )) : (
+                 <p className="text-gray-400 italic col-span-full text-center">No featured fighters found.</p>
+             )}
+           </div>
+        )}
       </div>
     </section>
   );

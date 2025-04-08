@@ -1,173 +1,180 @@
-import React from 'react';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
+import Image from 'next/image';
+import { fetchPublishedEventById } from '../../admin/eventActions';
+import { formatEventDate } from '../../../utils/dateUtils';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
+import type { Metadata } from 'next';
 
-// Mock data for event details
-const eventData = {
-  1: {
-    id: 1,
-    title: 'UFC 298',
-    date: 'April 15, 2025',
-    location: 'Las Vegas, NV',
-    venue: 'UFC Apex',
-    mainEvent: 'Johnson vs. Thompson',
-    description: 'An epic championship showdown at the UFC Apex.',
-    startTime: '10:00:00',
-    promotion: 'UFC',
-    imageUrl: '/next.svg' // placeholder
-  },
-  2: {
-    id: 2,
-    title: 'Bellator 300',
-    date: 'April 22, 2025',
-    location: 'Los Angeles, CA',
-    venue: 'Kia Forum',
-    mainEvent: 'Davis vs. Rodriguez',
-    description: 'Bellator celebrates its 300th event with a stacked card.',
-    startTime: '10:00:00',
-    promotion: 'Bellator',
-    imageUrl: '/next.svg' // placeholder
-  },
-  3: {
-    id: 3,
-    title: 'UFC Fight Night',
-    date: 'May 5, 2025',
-    location: 'Miami, FL',
-    venue: 'Kaseya Center',
-    mainEvent: 'Lee vs. Garcia',
-    description: 'Rising stars clash in this exciting Fight Night event.',
-    startTime: '10:00:00',
-    promotion: 'UFC',
-    imageUrl: '/next.svg' // placeholder
-  },
-};
-
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const eventId = Number(params.id);
-  const event = eventData[eventId as keyof typeof eventData];
-  
-  if (!event) {
-    return {
-      title: 'Event Not Found',
-    };
-  }
-  
-  const url = `https://www.mma.box/events/${eventId}`;
-  
-  return {
-    title: `${event.title}: ${event.mainEvent} | MMA Fight Card`,
-    description: `Watch ${event.mainEvent} and the complete ${event.title} fight card on ${event.date} at ${event.venue}, ${event.location}. Get tickets, stream info, and fight details.`,
-    keywords: [`${event.title}`, `${event.mainEvent}`, `${event.promotion} event`, 'MMA event', 'fight card', event.location],
-    openGraph: {
-      title: `${event.title}: ${event.mainEvent}`,
-      description: event.description,
-      url,
-      type: 'website',
-      images: [
-        {
-          url: event.imageUrl,
-          width: 1200,
-          height: 630,
-          alt: `${event.title} fight poster`,
-        },
-      ],
-    },
-    alternates: {
-      canonical: url,
-    }
-  };
+// Define params type using id
+type Props = {
+    params: { id: string }
 }
 
-export default function EventPage({ params }: { params: { id: string } }) {
-  const eventId = Number(params.id);
-  
-  // Check if event exists in our data
-  if (!eventData[eventId as keyof typeof eventData]) {
-    notFound();
-  }
-  
-  const event = eventData[eventId as keyof typeof eventData];
-  const eventDateObject = new Date(`${event.date} ${event.startTime}`);
-  const isoDate = eventDateObject.toISOString();
-  
-  // Breadcrumb items
-  const breadcrumbItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Events', path: '/events' },
-    { label: event.title, path: `/events/${eventId}`, isCurrentPage: true }
-  ];
-  
-  // Schema.org structured data for the event
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'SportsEvent',
-    'name': event.title,
-    'description': event.description,
-    'startDate': isoDate,
-    'location': {
-      '@type': 'Place',
-      'name': event.venue,
-      'address': {
-        '@type': 'PostalAddress',
-        'addressLocality': event.location
-      }
-    },
-    'competitor': [
-      {
-        '@type': 'Person',
-        'name': event.mainEvent.split(' vs. ')[0]
-      },
-      {
-        '@type': 'Person',
-        'name': event.mainEvent.split(' vs. ')[1]
-      }
-    ],
-    'organizer': {
-      '@type': 'Organization',
-      'name': event.promotion
+// Generate Metadata dynamically using id
+export async function generateMetadata(
+    { params }: Props,
+  ): Promise<Metadata> {
+    const id = parseInt(params.id, 10);
+    if (isNaN(id)) {
+        return { title: 'Invalid Event ID' };
     }
-  };
-  
-  return (
-    <div className="bg-black text-white min-h-screen">
-      {/* Add structured data script */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData)
-        }}
-      />
-      
-      <div className="container mx-auto px-6 py-10">
-        {/* Breadcrumb navigation */}
-        <BreadcrumbNav items={breadcrumbItems} />
-        
-        <h1 className="text-4xl font-bold mb-2">{event.title}</h1>
-        <div className="flex items-center gap-4 text-gray-400 mb-6">
-          <span>{event.date}</span>
-          <span>•</span>
-          <span>{event.location}</span>
+    const event = await fetchPublishedEventById(id);
+   
+    if (!event) {
+      return {
+        title: 'Event Not Found'
+      }
+    }
+   
+    // Generate description safely, handling potentially null date/location
+    let description = `Details for the ${event.league} event: ${event.event_name || event.main_card || 'Event'}`;
+    if (event.date) {
+        description += `, taking place on ${formatEventDate(event.date)}`;
+    }
+    if (event.location) {
+        description += ` at ${event.location}`;
+    }
+    description += '.';
+
+    return {
+      title: `${event.event_name || event.main_card} | MMA Info`,
+      description: description, // Use generated description
+    }
+}
+
+// Event Detail Page Component using id
+export default async function EventDetailPage({ params }: Props) {
+    const id = parseInt(params.id, 10);
+    if (isNaN(id)) {
+        notFound();
+    }    const event = await fetchPublishedEventById(id);
+    if (!event) {
+        notFound();
+    }
+    // Use the fight_card field from the event object instead of fetching fights separately
+    const fights = event.fight_card || [];
+
+    // Correct breadcrumb structure based on error message
+    const breadcrumbItems = [
+        { label: 'Home', path: '/' },
+        { label: 'Events', path: '/events' },
+        { label: event.event_name || event.main_card || 'Event Details', path: `/events/${id}`, isCurrentPage: true },
+    ];
+
+    return (
+        <div className="container mx-auto px-4 py-8 text-white">
+            <BreadcrumbNav items={breadcrumbItems} />
+
+            <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden mt-6">
+                {event.image_url && (
+                    <div className="relative w-full aspect-[21/9]"> 
+                        <Image 
+                            src={event.image_url} 
+                            alt={event.event_name || 'Event Banner'} 
+                            fill 
+                            style={{ objectFit: 'cover', objectPosition: 'center top' }} 
+                            priority 
+                        />
+                    </div>
+                )}
+                <div className="p-6">
+                    <p className="text-indigo-400 font-semibold mb-1">{event.league}</p>
+                    <h1 className="text-3xl md:text-4xl font-bold mb-2">{event.event_name || 'Event Details'}</h1>
+                    <h2 className="text-2xl text-gray-300 mb-4">{event.main_card}</h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm">
+                        <div>
+                            <p className="text-gray-400">Date:</p>
+                            <p>{formatEventDate(event.date)}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-400">Location:</p>
+                            <p>{event.location || 'TBD'}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-400">How to Watch:</p>
+                            {event.how_to_watch_url ? (
+                                <a href={event.how_to_watch_url} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400 underline">
+                                    {event.how_to_watch || 'Watch Here'}
+                                </a>
+                            ) : (
+                                <p>{event.how_to_watch || 'Info not available'}</p>
+                            )}
+                        </div>
+                        {event.ticket_link && event.ticket_link !== 'localhost:3' && event.ticket_link !== 'Not Available' && (
+                            <div>
+                                <p className="text-gray-400">Tickets:</p>
+                                <a href={event.ticket_link} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400 underline">
+                                    Buy Tickets
+                                </a>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Fight Card Section */} 
+                    <div className="mt-8">
+                        <h3 className="text-2xl font-semibold mb-4 border-t border-gray-700 pt-4">Fight Card</h3>                        {fights.length > 0 ? (
+                            <ul className="space-y-4">
+                                {fights.sort((a, b) => {
+                                    // Sort by card position first
+                                    const positions = {
+                                        'MAIN_EVENT': 1,
+                                        'CO_MAIN': 2,
+                                        'TITLE_FIGHT': 3,
+                                        'MAIN_CARD': 4,
+                                        'PRELIM': 5,
+                                        'CANCELLED': 6,
+                                        null: 99
+                                    };
+                                    
+                                    const posA = positions[a.card_position as keyof typeof positions] || 
+                                               (a.is_main_event ? 1 : a.is_co_main ? 2 : 99);
+                                    const posB = positions[b.card_position as keyof typeof positions] || 
+                                               (b.is_main_event ? 1 : b.is_co_main ? 2 : 99);
+                                    
+                                    // If same position, sort by bout order
+                                    if (posA === posB) {
+                                        return (a.bout_order ?? 99) - (b.bout_order ?? 99);
+                                    }
+                                    
+                                    return posA - posB;
+                                }).map((fight, index) => (
+                                    <li key={index} className={`p-4 rounded-md shadow ${fight.card_position === 'CANCELLED' ? 'bg-gray-800/50 line-through' : 'bg-gray-700'}`}>
+                                        <p className="font-bold text-lg">{fight.fighter1_name} vs. {fight.fighter2_name}</p>
+                                        <p className="text-sm text-gray-400">
+                                            {fight.weight_class} 
+                                            {fight.is_title_fight || fight.card_position === 'TITLE_FIGHT' ? ' • Title Fight' : ''} 
+                                            {fight.card_position ? ` • ${fight.card_position.replace('_', ' ')
+                                                                 .replace('MAIN EVENT', 'Main Event')
+                                                                 .replace('CO MAIN', 'Co-Main Event')
+                                                                 .replace('MAIN CARD', 'Main Card')
+                                                                 .replace('PRELIM', 'Prelim')
+                                                                 .replace('TITLE_FIGHT', 'Title Fight')
+                                                                 .replace('CANCELLED', 'CANCELLED')}` : 
+                                             fight.is_main_event ? ' • Main Event' : 
+                                             fight.is_co_main ? ' • Co-Main Event' : ''}
+                                        </p>
+                                        {/* Display result if available */}
+                                        {fight.result && (
+                                            <div className="mt-2 text-sm bg-gray-600 p-2 rounded">
+                                                <p>
+                                                    <span className="font-semibold">Result:</span> 
+                                                    {fight.result.winner_name} def. {fight.result.loser_name} by {fight.result.method} in Round {fight.result.round} ({fight.result.time})
+                                                </p>
+                                            </div>
+                                        )}
+                                        {fight.notes && (
+                                            <p className="text-sm text-gray-500 mt-1 italic">Notes: {fight.notes}</p>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-400 italic">Fight card details not available yet.</p>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
-        <p className="text-xl text-red-500 font-medium mb-4">Main Event: {event.mainEvent}</p>
-        <p className="text-lg text-gray-300 mb-8">{event.description}</p>
-        
-        <div className="flex gap-4">
-          <Link 
-            href="/events"
-            className="inline-block px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
-          >
-            Back to Events
-          </Link>
-          <Link 
-            href="/"
-            className="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-          >
-            Home
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+    );
 } 

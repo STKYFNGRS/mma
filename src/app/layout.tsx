@@ -10,11 +10,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: {
-    default: "MMA Hub | Ultimate Guide to UFC, Bellator & MMA Fights",
+    default: "MMA Hub | Ultimate Guide to UFC, PFL & MMA Fights",
     template: "%s | mma.box"
   },
-  description: "Premier MMA coverage including UFC, Bellator and ONE Championship. Fighter profiles, exclusive interviews, fight analysis, and more.",
-  keywords: ["MMA", "UFC", "Bellator", "ONE Championship", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu"],
+  description: "Premier MMA coverage including UFC, PFL and ONE Championship. Fighter profiles, exclusive interviews, fight analysis, and more.",
+  keywords: ["MMA", "UFC", "PFL", "ONE Championship", "MMA fighters", "UFC fights", "MMA news", "fight results", "MMA rankings", "MMA betting", "MMA training", "boxing", "kickboxing", "jiu-jitsu"],
   metadataBase: new URL('https://mma.box'),
   openGraph: {
     title: "Ultimate MMA Fan Hub",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ultimate MMA Coverage | UFC, Bellator & More",
+    title: "Ultimate MMA Coverage | UFC, PFL & More",
     description: "Follow the latest MMA events, fighters, and breaking news from the world's top promotions",
     creator: "@dudedotbox",
     images: ["/android-chrome-512x512.png"],
