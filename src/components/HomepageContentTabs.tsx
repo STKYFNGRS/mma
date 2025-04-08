@@ -76,116 +76,161 @@ export default function HomepageContentTabs({
 
   return (
     <section className="container mx-auto px-4 py-8 md:py-12">
-      {/* Tab Buttons */}
-      <div className="flex justify-center space-x-2 md:space-x-4 mb-8">
-        {['events', 'news', 'fighters'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 md:px-6 md:py-2.5 rounded-full text-sm md:text-base font-semibold transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${ 
-              activeTab === tab 
-                ? 'bg-red-600 text-white shadow-md' 
-                : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
-            }`}
-          >
-            {tab === 'events' ? 'Upcoming Events' : tab === 'news' ? 'Latest News' : 'Featured Fighters'}
-          </button>
-        ))}
-      </div>
+      <div className="bg-gray-900/50 py-10 px-4 md:px-8 rounded-2xl border border-gray-800/60 shadow-lg mx-auto">
+        {/* Tab Buttons */}
+        <div className="flex justify-center space-x-3 md:space-x-6 mb-10">
+          {['events', 'news', 'fighters'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-5 py-2.5 md:px-7 md:py-3 rounded-full text-sm md:text-base font-semibold transition-all duration-300 ease-in-out focus:outline-none ${
+                activeTab === tab 
+                  ? 'bg-red-600 text-white shadow-md ring-2 ring-red-500/30 ring-offset-2 ring-offset-gray-900' 
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+              }`}
+            >
+              {tab === 'events' ? 'Upcoming Events' : tab === 'news' ? 'Latest News' : 'Featured Fighters'}
+            </button>
+          ))}
+        </div>
 
-      {/* Tab Content */}
-      <div className="min-h-[300px]">
-        {/* Upcoming Events Tab */} 
-        {activeTab === 'events' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fadeIn">
-            {upcomingEvents.length > 0 ? upcomingEvents.map((event) => (
-              <Link href={`/events/${event.id}`} key={event.id} className="block bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-                 {event.image_url && (
-                     <div className="relative w-full aspect-[21/9]"> {/* Updated to match detail page */} 
-                         <Image 
-                             src={event.image_url} 
-                             alt={event.event_name || 'Event'} 
-                             fill
-                             style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                             className="transition-transform duration-300 group-hover:scale-105"
-                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                         />
-                     </div>
-                 )}
-                 <div className="p-4">
-                    <p className="text-xs text-indigo-400 font-semibold mb-1 uppercase tracking-wider">{event.league}</p>
-                    <h3 className="text-lg font-bold text-white mb-1 truncate group-hover:text-red-500 transition-colors" title={event.event_name || event.main_card || 'Event'}>
-                         {event.event_name || event.main_card}
-                     </h3>
-                     <p className="text-sm text-gray-400 mb-1">{formatEventDate(event.date)}</p>
-                     <p className="text-sm text-gray-500 truncate">{event.location || 'Location TBD'}</p>
-                 </div>
-               </Link>
-            )) : (
-                 <p className="text-gray-400 italic col-span-full text-center">No upcoming events found.</p>
-            )}
-          </div>
-        )}
-
-        {/* Latest News Tab */}
-        {activeTab === 'news' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fadeIn">
-            {latestNews.length > 0 ? latestNews.map((article) => (
-                <Link href={`/news/${article.slug}`} key={article.id} className="block bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-                    {article.image_url && (
-                         <div className="relative w-full h-40"> {/* Container for Image */} 
-                             <Image 
-                                 src={article.image_url} 
-                                 alt={article.title || 'News'} 
-                                 fill
-                                 style={{ objectFit: 'cover' }}
-                                 className="transition-transform duration-300 group-hover:scale-105"
-                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                             />
-                         </div>
+        {/* Tab Content */}
+        <div className="min-h-[300px]">
+          {/* Upcoming Events Tab */} 
+          {activeTab === 'events' && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto animate-fadeIn">
+                {upcomingEvents.slice(0, 3).map((event) => (
+                  <Link href={`/events/${event.id}`} key={event.id} className="block bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+                    {event.image_url && (
+                      <div className="relative w-full aspect-[16/9]">
+                        <Image 
+                          src={event.image_url} 
+                          alt={event.event_name || 'Event'} 
+                          fill
+                          style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                          className="transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      </div>
                     )}
-                    <div className="p-4">
-                         <h3 className="text-lg font-bold text-white mb-1 truncate group-hover:text-red-500 transition-colors" title={article.title}>
-                             {article.title}
-                         </h3>
-                         <p className="text-sm text-gray-400 mb-1 line-clamp-2">{article.summary}</p>
-                         <p className="text-xs text-gray-500">{article.published_at ? formatEventDate(article.published_at) : 'Date unknown'}</p>
-                     </div>
-                </Link>
-            )) : (
-                 <p className="text-gray-400 italic col-span-full text-center">No latest news found.</p>
-            )}
+                    <div className="p-6">
+                      <p className="text-xs text-indigo-400 font-semibold mb-1 uppercase tracking-wider">{event.league}</p>
+                      <h3 className="text-xl font-bold text-white mb-2 truncate group-hover:text-red-500 transition-colors" title={event.event_name || event.main_card || 'Event'}>
+                        {event.event_name || event.main_card}
+                      </h3>
+                      <p className="text-sm text-gray-400 mb-2">{formatEventDate(event.date)}</p>
+                      <p className="text-sm text-gray-500 truncate">{event.location || 'Location TBD'}</p>
+                    </div>
+                  </Link>
+                ))}
+                {upcomingEvents.length === 0 && (
+                  <p className="text-gray-400 italic col-span-full text-center">No upcoming events found.</p>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Latest News Tab */}
+          {activeTab === 'news' && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto animate-fadeIn">
+                {latestNews.slice(0, 3).map((article) => (
+                  <Link href={`/news/${article.slug}`} key={article.id} className="block bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+                    {article.image_url && (
+                      <div className="relative w-full aspect-[16/9]">
+                        <Image 
+                          src={article.image_url} 
+                          alt={article.title || 'News'} 
+                          fill
+                          style={{ objectFit: 'cover' }}
+                          className="transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-white mb-2 truncate group-hover:text-red-500 transition-colors" title={article.title}>
+                        {article.title}
+                      </h3>
+                      <p className="text-sm text-gray-400 mb-2 line-clamp-2">{article.summary}</p>
+                      <p className="text-xs text-gray-500">{article.published_at ? formatEventDate(article.published_at) : 'Date unknown'}</p>
+                    </div>
+                  </Link>
+                ))}
+                {latestNews.length === 0 && (
+                  <p className="text-gray-400 italic col-span-full text-center">No latest news found.</p>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Featured Fighters Tab */}
+          {activeTab === 'fighters' && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto animate-fadeIn">
+                {featuredFighters.slice(0, 3).map((fighter) => (
+                  <div key={fighter.id} className="text-center bg-gray-800 rounded-lg shadow-lg p-6 group">
+                    <div className="relative w-32 h-32 mx-auto mb-4">
+                      {fighter.image ? (
+                        <Image 
+                          src={fighter.image} 
+                          alt={fighter.name} 
+                          fill
+                          className="rounded-full object-cover border-2 border-gray-700 group-hover:border-red-600 transition-colors"
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                        />
+                      ) : (
+                        <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-600 text-gray-400 text-2xl font-bold">
+                          {fighter.name.substring(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors">{fighter.name}</h3>
+                    <p className="text-md text-gray-400 mt-1">{fighter.division}</p>
+                    <p className="text-sm text-gray-500 mt-1">{fighter.record}</p>
+                  </div>
+                ))}
+                {featuredFighters.length === 0 && (
+                  <p className="text-gray-400 italic col-span-full text-center">No featured fighters found.</p>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+        
+        {/* View All buttons */}
+        {activeTab === 'events' && upcomingEvents.length > 3 && (
+          <div className="text-center mt-10">
+            <Link href="/events" className="inline-flex items-center px-6 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors shadow-md font-medium">
+              View All Events
+              <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
           </div>
         )}
-
-        {/* Featured Fighters Tab */}
-        {activeTab === 'fighters' && (
-           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 animate-fadeIn">
-             {featuredFighters.length > 0 ? featuredFighters.map((fighter) => (
-                 <div key={fighter.id} className="text-center bg-gray-800 rounded-lg shadow-lg p-4 group">
-                     <div className="relative w-24 h-24 mx-auto mb-3">
-                         {fighter.image ? (
-                             <Image 
-                                 src={fighter.image} 
-                                 alt={fighter.name} 
-                                 fill
-                                 className="rounded-full object-cover border-2 border-gray-700 group-hover:border-red-600 transition-colors"
-                                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                             />
-                         ) : (
-                             <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-600 text-gray-400">
-                                 {fighter.name.substring(0, 2).toUpperCase()}
-                             </div>
-                         )}
-                     </div>
-                     <h3 className="font-semibold text-white group-hover:text-red-500 transition-colors">{fighter.name}</h3>
-                     <p className="text-sm text-gray-400">{fighter.division}</p>
-                     <p className="text-xs text-gray-500">{fighter.record}</p>
-                 </div>
-             )) : (
-                 <p className="text-gray-400 italic col-span-full text-center">No featured fighters found.</p>
-             )}
-           </div>
+        
+        {activeTab === 'news' && latestNews.length > 3 && (
+          <div className="text-center mt-10">
+            <Link href="/news" className="inline-flex items-center px-6 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors shadow-md font-medium">
+              View All News
+              <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
+          </div>
+        )}
+        
+        {activeTab === 'fighters' && featuredFighters.length > 3 && (
+          <div className="text-center mt-10">
+            <Link href="/fighters" className="inline-flex items-center px-6 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors shadow-md font-medium">
+              View All Fighters
+              <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
+          </div>
         )}
       </div>
     </section>
